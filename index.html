@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biblioteca Central - Portal Institucional</title>
+  <title>Biblioteca Tecnologica 2026 Uruguay </title>
   
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
 
@@ -2148,6 +2148,7 @@
       const notificacionesFuncionario = document.getElementById('notificaciones-funcionario');
       notificacionesFuncionario.style.display = esFuncionario ? 'block' : 'none';
       renderizarNotificacionesFuncionario();
+      renderizarConsultasEnChat();
 
       const calendario = document.getElementById('calendario');
       calendario.style.display = esFuncionario ? 'none' : 'block';
@@ -2553,6 +2554,33 @@
         : '<div class="notificacion-chat">No hay consultas pendientes.</div>';
     }
 
+    function renderizarConsultasEnChat() {
+      if (usuarioSesion.rol !== 'funcionario') return;
+
+      const chatBox = document.getElementById('chat-messages');
+      if (!chatBox) return;
+
+      consultasChat.forEach((consulta, indice) => {
+        const idConsulta = consulta.id || `${consulta.fecha}-${consulta.ci}-${indice}`;
+        if (chatBox.querySelector(`[data-consulta-id="${CSS.escape(idConsulta)}"]`)) return;
+
+        const mensaje = document.createElement('div');
+        mensaje.className = 'msg estudiante mensaje-consulta-recibida';
+        mensaje.dataset.consultaId = idConsulta;
+        mensaje.innerHTML = `<strong>${escaparTexto(consulta.nombre)} (Estudiante):</strong> ${escaparTexto(consulta.texto)}`;
+        chatBox.appendChild(mensaje);
+      });
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    window.addEventListener('storage', evento => {
+      if (evento.key !== 'consultasChatBiblioteca') return;
+      consultasChat = JSON.parse(evento.newValue || '[]');
+      renderizarNotificacionesFuncionario();
+      renderizarConsultasEnChat();
+    });
+
     function toggleNotificacionesFuncionario(evento) {
       evento.stopPropagation();
       const lista = document.getElementById('lista-notificaciones');
@@ -2582,6 +2610,7 @@
         input.value = '';
 
         consultasChat.push({
+          id: `${Date.now()}-${usuarioSesion.ci}`,
           nombre: usuarioSesion.nombre,
           ci: usuarioSesion.ci,
           texto,
