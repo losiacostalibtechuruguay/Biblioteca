@@ -482,6 +482,65 @@
       outline-offset: 3px;
     }
 
+    .notificaciones-funcionario {
+      position: relative;
+      display: none;
+    }
+
+    .btn-campana {
+      position: relative;
+      background: transparent;
+      border: 0;
+      color: var(--text-navbar);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.35rem;
+    }
+
+    .contador-notificaciones {
+      position: absolute;
+      top: -0.2rem;
+      right: -0.25rem;
+      min-width: 1.1rem;
+      height: 1.1rem;
+      padding: 0 0.25rem;
+      background-color: #c62828;
+      color: #fff;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: bold;
+      line-height: 1rem;
+      text-align: center;
+    }
+
+    .lista-notificaciones {
+      position: absolute;
+      top: 2.2rem;
+      right: 0;
+      z-index: 20;
+      display: none;
+      width: 290px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 0.7rem;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-card);
+      border-radius: 4px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .notificacion-chat {
+      padding: 0.6rem;
+      border-bottom: 1px solid var(--border-card);
+      font-size: 0.8rem;
+    }
+
+    .notificacion-chat:last-child {
+      border-bottom: 0;
+    }
+
     @media (max-width: 900px) {
       .navbar {
         height: auto;
@@ -1128,6 +1187,24 @@
       margin-bottom: 0.5rem;
     }
 
+    .alertas-devolucion {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      background-color: #fff3cd;
+      border: 1px solid #d39e00;
+      border-left: 4px solid #d39e00;
+      color: #664d03;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    body.dark-mode .alertas-devolucion {
+      background-color: #3d3218;
+      color: #ffe69c;
+      border-color: #d39e00;
+    }
+
     .lista-prestamos {
       display: grid;
       gap: 0.6rem;
@@ -1154,6 +1231,18 @@
       font-size: 0.85rem;
       font-weight: bold;
       text-align: right;
+    }
+
+    .btn-recordatorio {
+      display: inline-block;
+      margin-top: 0.45rem;
+      padding: 0.35rem 0.55rem;
+      background-color: #25d366;
+      color: #000;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-decoration: none;
     }
 
     .prestamo-retirado {
@@ -1367,6 +1456,12 @@
             <span id="theme-icon">🌙</span> <span id="theme-text">Oscuro</span>
           </button>
         </li>
+        <li id="notificaciones-funcionario" class="notificaciones-funcionario">
+          <button type="button" class="btn-campana" title="Notificaciones de consultas" onclick="toggleNotificacionesFuncionario(event)">
+            🔔<span id="contador-notificaciones" class="contador-notificaciones" hidden>0</span>
+          </button>
+          <div id="lista-notificaciones" class="lista-notificaciones"></div>
+        </li>
         <li><span id="user-display" class="usuario-badge"></span></li>
         <li><button class="btn-logout" onclick="cerrarSesion()">Salir</button></li>
       </ul>
@@ -1554,6 +1649,7 @@
     <section id="calendario" class="seccion-container calendario-prestamos">
       <h3>🗓️ Mi calendario de préstamos</h3>
       <p style="font-size: 0.85rem; color: #666;">Aquí aparecerán tus retiros y las fechas previstas de devolución.</p>
+      <div id="alertas-devolucion" class="alertas-devolucion" role="status"></div>
       <div id="lista-prestamos-estudiante" class="lista-prestamos"></div>
     </section>
 
@@ -1684,6 +1780,7 @@
     let estadoAbiertoBiblioteca = false;
     let estudiantesRegistrados = JSON.parse(localStorage.getItem('estudiantesBiblioteca') || '[]');
     let prestamosBiblioteca = JSON.parse(localStorage.getItem('prestamosBiblioteca') || '[]');
+    let consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
 
     const librosAdicionales = [
       ['La casa de los espíritus', 'Isabel Allende', 'Narrativa'],
@@ -2048,6 +2145,10 @@
       gestionEstudiantes.style.display = esFuncionario ? 'block' : 'none';
       if (esFuncionario) renderizarEstudiantes();
 
+      const notificacionesFuncionario = document.getElementById('notificaciones-funcionario');
+      notificacionesFuncionario.style.display = esFuncionario ? 'block' : 'none';
+      renderizarNotificacionesFuncionario();
+
       const calendario = document.getElementById('calendario');
       calendario.style.display = esFuncionario ? 'none' : 'block';
       renderizarCalendarioPrestamos();
@@ -2129,6 +2230,57 @@
       return new Date(`${fecha}T12:00:00`).toLocaleDateString('es-UY');
     }
 
+    function diasHastaDevolucion(fechaDevolucion) {
+      const hoy = new Date();
+      const fechaHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+      const fecha = new Date(`${fechaDevolucion}T00:00:00`);
+      return Math.round((fecha - fechaHoy) / (24 * 60 * 60 * 1000));
+    }
+
+    function verificarRecordatoriosDevolucion() {
+      const alertas = document.getElementById('alertas-devolucion');
+      if (!alertas || usuarioSesion.rol !== 'estudiante') return;
+
+      const prestamosDelEstudiante = prestamosBiblioteca.filter(prestamo => prestamo.ci === usuarioSesion.ci);
+      const recordatorios = prestamosDelEstudiante.map(prestamo => {
+        const dias = diasHastaDevolucion(prestamo.fechaDevolucion);
+        if (dias < 0) {
+          return `<strong>Devolución vencida:</strong> debes devolver “${escaparTexto(prestamo.libro)}” al locker. La fecha era ${formatearFecha(prestamo.fechaDevolucion)}.`;
+        }
+        if (dias === 0) {
+          return `<strong>Recordatorio para hoy:</strong> devuelve “${escaparTexto(prestamo.libro)}” al locker antes de finalizar el día.`;
+        }
+        if (dias <= 2) {
+          return `<strong>Recordatorio:</strong> faltan ${dias} día${dias === 1 ? '' : 's'} para devolver “${escaparTexto(prestamo.libro)}” al locker. Fecha: ${formatearFecha(prestamo.fechaDevolucion)}.`;
+        }
+        return '';
+      }).filter(Boolean);
+
+      alertas.innerHTML = recordatorios.join('<br><br>');
+      alertas.style.display = recordatorios.length ? 'block' : 'none';
+
+      if (recordatorios.length && 'Notification' in window) {
+        const claveAviso = `recordatorioDevolucion_${usuarioSesion.ci}_${new Date().toISOString().slice(0, 10)}`;
+        if (!localStorage.getItem(claveAviso)) {
+          const mostrarNotificaciones = () => {
+            if (Notification.permission === 'granted') {
+              new Notification('Recordatorio de devolución', {
+                body: recordatorios[0].replace(/<[^>]*>/g, ''),
+                icon: 'https://cdn-icons-png.flaticon.com/512/2232/2232688.png'
+              });
+              localStorage.setItem(claveAviso, 'enviado');
+            }
+          };
+
+          if (Notification.permission === 'default') {
+            Notification.requestPermission().then(mostrarNotificaciones);
+          } else {
+            mostrarNotificaciones();
+          }
+        }
+      }
+    }
+
     function renderizarCalendarioPrestamos() {
       const listaEstudiante = document.getElementById('lista-prestamos-estudiante');
       const listaFuncionario = document.getElementById('historial-prestamos-funcionario');
@@ -2147,10 +2299,19 @@
         ? prestamosBiblioteca.map(prestamo => `
           <div class="prestamo-item">
             <div><strong>${escaparTexto(prestamo.nombreEstudiante)} retiró “${escaparTexto(prestamo.libro)}”</strong><span class="prestamo-retirado">CI: ${escaparTexto(prestamo.ci)} · Locker ${escaparTexto(prestamo.numLocker)}</span></div>
-            <span class="prestamo-fecha">Devolución:<br>${formatearFecha(prestamo.fechaDevolucion)}</span>
+            <span class="prestamo-fecha">Devolución:<br>${formatearFecha(prestamo.fechaDevolucion)}<br><a class="btn-recordatorio" href="${crearEnlaceRecordatorio(prestamo)}" target="_blank" rel="noopener noreferrer">WhatsApp</a></span>
           </div>
         `).join('')
         : '<p style="font-size: 0.85rem; color: #666;">Todavía no hay retiros registrados.</p>';
+
+      verificarRecordatoriosDevolucion();
+    }
+
+    function crearEnlaceRecordatorio(prestamo) {
+      const estudiante = estudiantesRegistrados.find(registro => registro.ci === prestamo.ci);
+      const celular = normalizarCelular(estudiante?.celular || '');
+      const mensaje = `Hola ${prestamo.nombreEstudiante}, te recordamos que debes devolver el libro “${prestamo.libro}” al locker ${prestamo.numLocker} el ${formatearFecha(prestamo.fechaDevolucion)}. Biblioteca Central.`;
+      return celular ? `https://wa.me/${celular}?text=${encodeURIComponent(mensaje)}` : '#';
     }
 
     function registrarEstudiante() {
@@ -2373,6 +2534,39 @@
     }
 
     /* CHATBOT */
+    function renderizarNotificacionesFuncionario() {
+      const contador = document.getElementById('contador-notificaciones');
+      const lista = document.getElementById('lista-notificaciones');
+      if (!contador || !lista) return;
+
+      const pendientes = consultasChat.filter(consulta => !consulta.leida);
+      contador.textContent = pendientes.length;
+      contador.hidden = pendientes.length === 0;
+      lista.innerHTML = pendientes.length
+        ? pendientes.map(consulta => `
+          <div class="notificacion-chat">
+            <strong>${escaparTexto(consulta.nombre)}</strong> consultó:<br>
+            “${escaparTexto(consulta.texto)}”<br>
+            <small>${new Date(consulta.fecha).toLocaleString('es-UY')}</small>
+          </div>
+        `).join('')
+        : '<div class="notificacion-chat">No hay consultas pendientes.</div>';
+    }
+
+    function toggleNotificacionesFuncionario(evento) {
+      evento.stopPropagation();
+      const lista = document.getElementById('lista-notificaciones');
+      const seAbre = lista.style.display !== 'block';
+      lista.style.display = seAbre ? 'block' : 'none';
+
+      if (seAbre) {
+        consultasChat = consultasChat.map(consulta => ({ ...consulta, leida: true }));
+        localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
+        renderizarNotificacionesFuncionario();
+        lista.style.display = 'block';
+      }
+    }
+
     function enviarMensajeChat() {
       const input = document.getElementById('chat-input');
       const texto = input.value.trim();
@@ -2383,9 +2577,19 @@
 
       if (usuarioSesion.rol === 'estudiante') {
         msgDiv.className = 'msg estudiante';
-        msgDiv.innerHTML = `<strong>${usuarioSesion.nombre} (Estudiante):</strong> ${texto}`;
+        msgDiv.innerHTML = `<strong>${escaparTexto(usuarioSesion.nombre)} (Estudiante):</strong> ${escaparTexto(texto)}`;
         chatBox.appendChild(msgDiv);
         input.value = '';
+
+        consultasChat.push({
+          nombre: usuarioSesion.nombre,
+          ci: usuarioSesion.ci,
+          texto,
+          fecha: new Date().toISOString(),
+          leida: false
+        });
+        localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
+        renderizarNotificacionesFuncionario();
 
         setTimeout(() => {
           const autoReply = document.createElement('div');
