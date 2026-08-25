@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Biblioteca Tecnologica 2026 Uruguay </title>
+  <title>Biblioteca Central - Portal Institucional</title>
   
   <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
 
@@ -1781,6 +1781,7 @@
     let estudiantesRegistrados = JSON.parse(localStorage.getItem('estudiantesBiblioteca') || '[]');
     let prestamosBiblioteca = JSON.parse(localStorage.getItem('prestamosBiblioteca') || '[]');
     let consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
+    let intervaloChat = null;
 
     const librosAdicionales = [
       ['La casa de los espíritus', 'Isabel Allende', 'Narrativa'],
@@ -2082,6 +2083,8 @@
 
       actualizarRelojDigital();
       aplicarPermisosRol();
+      sincronizarConsultasChat();
+      if (!intervaloChat) intervaloChat = setInterval(sincronizarConsultasChat, 3000);
       iniciarCarruselAutomatico();
     }
 
@@ -2162,6 +2165,8 @@
 
     function cerrarSesion() {
       detenerCarrusel();
+      clearInterval(intervaloChat);
+      intervaloChat = null;
       document.getElementById('main-portal').style.display = 'none';
       document.getElementById('auth-screen').style.display = 'flex';
     }
@@ -2535,12 +2540,33 @@
     }
 
     /* CHATBOT */
+    function sincronizarConsultasChat() {
+      consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
+      renderizarNotificacionesFuncionario();
+      renderizarConsultasEnChat();
+    }
+
+    function guardarMensajeChat(texto, rol) {
+      consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
+      consultasChat.push({
+        id: `${Date.now()}-${usuarioSesion.ci}`,
+        nombre: usuarioSesion.nombre,
+        ci: usuarioSesion.ci,
+        texto,
+        fecha: new Date().toISOString(),
+        leida: false,
+        rol
+      });
+      localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
+      sincronizarConsultasChat();
+    }
+
     function renderizarNotificacionesFuncionario() {
       const contador = document.getElementById('contador-notificaciones');
       const lista = document.getElementById('lista-notificaciones');
       if (!contador || !lista) return;
 
-      const pendientes = consultasChat.filter(consulta => !consulta.leida);
+      const pendientes = consultasChat.filter(consulta => consulta.rol === 'estudiante' && !consulta.leida);
       contador.textContent = pendientes.length;
       contador.hidden = pendientes.length === 0;
       lista.innerHTML = pendientes.length
@@ -2562,24 +2588,17 @@
 
       consultasChat.forEach((consulta, indice) => {
         const idConsulta = consulta.id || `${consulta.fecha}-${consulta.ci}-${indice}`;
-        if (chatBox.querySelector(`[data-consulta-id="${CSS.escape(idConsulta)}"]`)) return;
+        if (chatBox.querySelector(`[data-consulta-id="${idConsulta}"]`)) return;
 
         const mensaje = document.createElement('div');
-        mensaje.className = 'msg estudiante mensaje-consulta-recibida';
+        mensaje.className = `msg ${consulta.rol === 'estudiante' ? 'estudiante' : 'funcionario'} mensaje-consulta-recibida`;
         mensaje.dataset.consultaId = idConsulta;
-        mensaje.innerHTML = `<strong>${escaparTexto(consulta.nombre)} (Estudiante):</strong> ${escaparTexto(consulta.texto)}`;
+        const etiquetaRol = consulta.rol === 'estudiante' ? 'Estudiante' : 'Funcionario';
+        mensaje.innerHTML = `<strong>${escaparTexto(consulta.nombre)} (${etiquetaRol}):</strong> ${escaparTexto(consulta.texto)}`;
         chatBox.appendChild(mensaje);
       });
-
       chatBox.scrollTop = chatBox.scrollHeight;
     }
-
-    window.addEventListener('storage', evento => {
-      if (evento.key !== 'consultasChatBiblioteca') return;
-      consultasChat = JSON.parse(evento.newValue || '[]');
-      renderizarNotificacionesFuncionario();
-      renderizarConsultasEnChat();
-    });
 
     function toggleNotificacionesFuncionario(evento) {
       evento.stopPropagation();
@@ -2588,12 +2607,17 @@
       lista.style.display = seAbre ? 'block' : 'none';
 
       if (seAbre) {
-        consultasChat = consultasChat.map(consulta => ({ ...consulta, leida: true }));
+        consultasChat = consultasChat.map(consulta => (
+          consulta.rol === 'estudiante' ? { ...consulta, leida: true } : consulta
+        ));
         localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
-        renderizarNotificacionesFuncionario();
-        lista.style.display = 'block';
+        sincronizarConsultasChat();
       }
     }
+
+    window.addEventListener('storage', evento => {
+      if (evento.key === 'consultasChatBiblioteca') sincronizarConsultasChat();
+    });
 
     function enviarMensajeChat() {
       const input = document.getElementById('chat-input');
@@ -2609,16 +2633,7 @@
         chatBox.appendChild(msgDiv);
         input.value = '';
 
-        consultasChat.push({
-          id: `${Date.now()}-${usuarioSesion.ci}`,
-          nombre: usuarioSesion.nombre,
-          ci: usuarioSesion.ci,
-          texto,
-          fecha: new Date().toISOString(),
-          leida: false
-        });
-        localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
-        renderizarNotificacionesFuncionario();
+        guardarMensajeChat(texto, 'estudiante');
 
         setTimeout(() => {
           const autoReply = document.createElement('div');
@@ -2641,9 +2656,10 @@
 
       } else if (usuarioSesion.rol === 'funcionario') {
         msgDiv.className = 'msg funcionario';
-        msgDiv.innerHTML = `<strong>${usuarioSesion.nombre} (Funcionario):</strong> ${texto}`;
+        msgDiv.innerHTML = `<strong>${escaparTexto(usuarioSesion.nombre)} (Funcionario):</strong> ${escaparTexto(texto)}`;
         chatBox.appendChild(msgDiv);
         input.value = '';
+        guardarMensajeChat(texto, 'funcionario');
       }
 
       chatBox.scrollTop = chatBox.scrollHeight;
@@ -2678,7 +2694,7 @@
         return;
       }
 
-      const casillaDestino = "biblioteca@institucion.edu.uy";
+      const casillaDestino = "losiacostalibtechuruguay@gmail.com";
       const asunto = encodeURIComponent(`Nuevo Comentario de ${nombre} - Biblioteca Central`);
       const cuerpo = encodeURIComponent(
         `Hola Biblioteca Central,\n\n` +
