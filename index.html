@@ -541,6 +541,23 @@
       border-bottom: 0;
     }
 
+    .aviso-chat-en-sitio {
+      position: fixed;
+      top: 72px;
+      right: 1rem;
+      z-index: 1100;
+      display: none;
+      max-width: 320px;
+      padding: 0.8rem 1rem;
+      background-color: #fff3cd;
+      color: #664d03;
+      border: 1px solid #d39e00;
+      border-left: 4px solid #d39e00;
+      border-radius: 4px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+      font-size: 0.85rem;
+    }
+
     @media (max-width: 900px) {
       .navbar {
         height: auto;
@@ -1410,6 +1427,8 @@
   <!-- PORTAL PRINCIPAL -->
   <div id="main-portal">
 
+    <div id="aviso-chat-en-sitio" class="aviso-chat-en-sitio" role="status"></div>
+
     <div class="libros-volando izquierda" aria-hidden="true">
       <span class="libro-decorativo libro-uno"></span>
       <span class="libro-decorativo libro-dos"></span>
@@ -1782,6 +1801,8 @@
     let prestamosBiblioteca = JSON.parse(localStorage.getItem('prestamosBiblioteca') || '[]');
     let consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
     let intervaloChat = null;
+    let conversacionActivaCi = '';
+    const API_BASE = window.location.protocol === 'file:' ? 'http://localhost:3000' : '';
 
     const librosAdicionales = [
       ['La casa de los espíritus', 'Isabel Allende', 'Narrativa'],
@@ -2172,10 +2193,15 @@
     }
 
     function limpiarDatosGuardados() {
+      if (!confirm('¿Quieres borrar todos los usuarios, mensajes, reservas y préstamos guardados en este navegador?')) return;
+
+      localStorage.clear();
       document.getElementById('login-nombre').value = '';
       document.getElementById('login-usuario').value = '';
+      document.getElementById('login-celular').value = '';
       document.getElementById('login-pass').value = '';
-      document.getElementById('login-msg').innerText = 'Datos borrados.';
+      document.getElementById('login-msg').innerText = 'Todos los datos locales fueron borrados.';
+      setTimeout(() => location.reload(), 500);
     }
 
     function filtrarLibros() {
@@ -2388,7 +2414,7 @@
       }
     }
 
-    function pedirLibro(titulo, btn) {
+    async function pedirLibro(titulo, btn) {
       if (usuarioSesion.rol !== 'funcionario' && !estadoAbiertoBiblioteca) {
         alert("La biblioteca está cerrada.");
         return;
@@ -2410,24 +2436,32 @@
       if (lockersLibres.length > 0) {
         const locker = lockersLibres[0];
         const num = locker.id.replace('locker-', '');
-        
-        locker.classList.remove('disponible');
-        locker.classList.add('ocupado');
-        locker.innerHTML = `${num}<br><small>Ocupado</small>`;
+        try {
+          const respuesta = await fetch(`${API_BASE}/api/reservas`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              ci: ciEstudiante.trim(),
+              nombre: estudiantesRegistrados.find(estudiante => estudiante.ci === ciEstudiante.trim())?.nombre || `Estudiante CI ${ciEstudiante.trim()}`,
+              libro: titulo,
+              numLocker: num,
+              fechaDevolucion
+            })
+          });
+          if (!respuesta.ok) throw new Error('No se pudo guardar la reserva');
 
-        asignacionesCasilleros[ciEstudiante.trim()] = {
-          lockerId: locker.id,
-          numLocker: num,
-          libro: titulo,
-          fechaDevolucion
-        };
+          locker.classList.remove('disponible');
+          locker.classList.add('ocupado');
+          locker.innerHTML = `${num}<br><small>Ocupado</small>`;
+          btn.disabled = true;
+          btn.innerText = "Asignado";
 
-        btn.disabled = true;
-        btn.innerText = "Asignado";
-
-        const notif = document.getElementById('notif-retiro');
-        notif.innerHTML = `✅ Libro <strong>"${titulo}"</strong> asignado al Locker <strong>${num}</strong> para el CI: <strong>${ciEstudiante}</strong>.`;
-        notif.style.display = 'block';
+          const notif = document.getElementById('notif-retiro');
+          notif.innerHTML = `✅ Libro <strong>"${escaparTexto(titulo)}"</strong> asignado al Locker <strong>${num}</strong> para el CI: <strong>${escaparTexto(ciEstudiante)}</strong>.`;
+          notif.style.display = 'block';
+        } catch (error) {
+          alert('No se pudo guardar la reserva. Verifica que server.js esté encendido.');
+        }
       } else {
         alert("No hay lockers disponibles (Verdes).");
       }
@@ -2450,7 +2484,7 @@
       if (!input.disabled) input.value = '';
     }
 
-    function autenticarTotemPorCI() {
+    async function autenticarTotemPorCI() {
       if (!estadoAbiertoBiblioteca && usuarioSesion.rol !== 'funcionario') {
         alert("El servicio de Tótem está fuera de horario.");
         return;
@@ -2464,9 +2498,22 @@
         return;
       }
 
-      if (asignacionesCasilleros[ci]) {
-        const reserva = asignacionesCasilleros[ci];
-        const elLocker = document.getElementById(reserva.lockerId);
+      let reserva = asignacionesCasilleros[ci];
+      if (!reserva) {
+        try {
+          const respuesta = await fetch(`${API_BASE}/api/reservas/${encodeURIComponent(ci)}`);
+          if (respuesta.ok) reserva = await respuesta.json();
+        } catch (error) {
+          console.error('No se pudo consultar la reserva:', error);
+        }
+      }
+
+      if (reserva) {
+        const elLocker = document.getElementById(reserva.lockerId || `locker-${reserva.numLocker}`);
+        if (!elLocker) {
+          alert(`No se encontró el Locker ${reserva.numLocker} en este tótem.`);
+          return;
+        }
         const estudiante = estudiantesRegistrados.find(registro => registro.ci === ci);
         const prestamo = {
           ci,
@@ -2494,6 +2541,8 @@
           elLocker.classList.add('disponible');
           elLocker.innerHTML = `${reserva.numLocker}<br><small>Libre</small>`;
           delete asignacionesCasilleros[ci];
+          fetch(`${API_BASE}/api/reservas/${encodeURIComponent(ci)}`, { method: 'DELETE' })
+            .catch(error => console.error('No se pudo cerrar la reserva:', error));
         }, 5000);
 
       } else {
@@ -2533,6 +2582,7 @@
       });
 
       asignacionesCasilleros = {};
+      localStorage.setItem('reservasLockersBiblioteca', JSON.stringify(asignacionesCasilleros));
 
       const notif = document.getElementById('notif-retiro');
       notif.innerText = "🔓 Todos los casilleros han sido liberados (Puestos en Verde).";
@@ -2540,25 +2590,52 @@
     }
 
     /* CHATBOT */
-    function sincronizarConsultasChat() {
-      consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
-      renderizarNotificacionesFuncionario();
-      renderizarConsultasEnChat();
+    async function sincronizarConsultasChat() {
+      try {
+        const respuesta = await fetch(`${API_BASE}/api/chat/mensajes`);
+        if (!respuesta.ok) throw new Error('No se pudieron consultar los mensajes');
+        consultasChat = await respuesta.json();
+        renderizarNotificacionesFuncionario();
+        renderizarConsultasEnChat();
+      } catch (error) {
+        console.error('No se pudieron sincronizar los mensajes:', error);
+      }
     }
 
-    function guardarMensajeChat(texto, rol) {
-      consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
-      consultasChat.push({
-        id: `${Date.now()}-${usuarioSesion.ci}`,
-        nombre: usuarioSesion.nombre,
-        ci: usuarioSesion.ci,
-        texto,
-        fecha: new Date().toISOString(),
-        leida: false,
-        rol
+    function normalizarMensajeChat(consulta) {
+      return {
+        ...consulta,
+        usuario_ci: consulta.usuario_ci || consulta.ci || '',
+        nombre_usuario: consulta.nombre_usuario || consulta.nombre || 'Usuario',
+        fecha_creacion: consulta.fecha_creacion || consulta.fecha || new Date().toISOString(),
+        leido: consulta.leido ?? consulta.leida ?? false,
+        destinatarioCi: consulta.destinatarioCi || ''
+      };
+    }
+
+    async function guardarMensajeChat(texto, rol, destinatarioCi = '') {
+      const respuesta = await fetch(`${API_BASE}/api/chat/mensajes`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          usuario_ci: usuarioSesion.ci,
+          nombre_usuario: usuarioSesion.nombre,
+          rol,
+          texto,
+          destinatarioCi
+        })
       });
-      localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
-      sincronizarConsultasChat();
+      if (!respuesta.ok) throw new Error('No se pudo guardar el mensaje');
+      await sincronizarConsultasChat();
+    }
+
+    function mostrarAvisoChatEnSitio() {
+      if (usuarioSesion.rol !== 'funcionario') return;
+      const aviso = document.getElementById('aviso-chat-en-sitio');
+      if (!aviso) return;
+      aviso.textContent = '🔔 Nueva consulta de un estudiante en el chatbot.';
+      aviso.style.display = 'block';
+      setTimeout(() => { aviso.style.display = 'none'; }, 5000);
     }
 
     function renderizarNotificacionesFuncionario() {
@@ -2566,38 +2643,55 @@
       const lista = document.getElementById('lista-notificaciones');
       if (!contador || !lista) return;
 
-      const pendientes = consultasChat.filter(consulta => consulta.rol === 'estudiante' && !consulta.leida);
+      const pendientes = consultasChat.filter(consulta => consulta.rol === 'estudiante' && !consulta.leido);
       contador.textContent = pendientes.length;
       contador.hidden = pendientes.length === 0;
       lista.innerHTML = pendientes.length
         ? pendientes.map(consulta => `
-          <div class="notificacion-chat">
-            <strong>${escaparTexto(consulta.nombre)}</strong> consultó:<br>
+          <div class="notificacion-chat" onclick="seleccionarConversacion('${escaparTexto(consulta.usuario_ci || consulta.ci)}')">
+            <strong>${escaparTexto(consulta.nombre_usuario || consulta.nombre)}</strong> consultó:<br>
             “${escaparTexto(consulta.texto)}”<br>
-            <small>${new Date(consulta.fecha).toLocaleString('es-UY')}</small>
+            <small>${new Date(consulta.fecha_creacion || consulta.fecha).toLocaleString('es-UY')}</small>
           </div>
         `).join('')
         : '<div class="notificacion-chat">No hay consultas pendientes.</div>';
     }
 
     function renderizarConsultasEnChat() {
-      if (usuarioSesion.rol !== 'funcionario') return;
-
       const chatBox = document.getElementById('chat-messages');
       if (!chatBox) return;
 
-      consultasChat.forEach((consulta, indice) => {
-        const idConsulta = consulta.id || `${consulta.fecha}-${consulta.ci}-${indice}`;
-        if (chatBox.querySelector(`[data-consulta-id="${idConsulta}"]`)) return;
+      const mensajesVisibles = usuarioSesion.rol === 'funcionario'
+        ? consultasChat
+        : consultasChat.filter(consulta => (
+          consulta.usuario_ci === usuarioSesion.ci || consulta.destinatarioCi === usuarioSesion.ci
+        ));
+
+      chatBox.innerHTML = '<div class="msg funcionario"><strong>Funcionario:</strong> Hola. ¿En qué podemos ayudarte hoy?</div>';
+      mensajesVisibles.forEach((consulta, indice) => {
+        const idConsulta = consulta.id || `${consulta.fecha_creacion || consulta.fecha}-${consulta.usuario_ci || consulta.ci}-${indice}`;
 
         const mensaje = document.createElement('div');
         mensaje.className = `msg ${consulta.rol === 'estudiante' ? 'estudiante' : 'funcionario'} mensaje-consulta-recibida`;
         mensaje.dataset.consultaId = idConsulta;
         const etiquetaRol = consulta.rol === 'estudiante' ? 'Estudiante' : 'Funcionario';
-        mensaje.innerHTML = `<strong>${escaparTexto(consulta.nombre)} (${etiquetaRol}):</strong> ${escaparTexto(consulta.texto)}`;
+        mensaje.innerHTML = `<strong>${escaparTexto(consulta.nombre_usuario || consulta.nombre)} (${etiquetaRol}):</strong> ${escaparTexto(consulta.texto)}`;
         chatBox.appendChild(mensaje);
       });
       chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function seleccionarConversacion(ci) {
+      conversacionActivaCi = ci;
+      fetch(`${API_BASE}/api/chat/mensajes/leer`, {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ ci })
+      })
+        .then(() => sincronizarConsultasChat())
+        .catch(error => console.error('No se pudo marcar la consulta:', error));
+      renderizarConsultasEnChat();
+      document.getElementById('contacto').scrollIntoView({ behavior: 'smooth', block: 'start' });
     }
 
     function toggleNotificacionesFuncionario(evento) {
@@ -2605,21 +2699,9 @@
       const lista = document.getElementById('lista-notificaciones');
       const seAbre = lista.style.display !== 'block';
       lista.style.display = seAbre ? 'block' : 'none';
-
-      if (seAbre) {
-        consultasChat = consultasChat.map(consulta => (
-          consulta.rol === 'estudiante' ? { ...consulta, leida: true } : consulta
-        ));
-        localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
-        sincronizarConsultasChat();
-      }
     }
 
-    window.addEventListener('storage', evento => {
-      if (evento.key === 'consultasChatBiblioteca') sincronizarConsultasChat();
-    });
-
-    function enviarMensajeChat() {
+    async function enviarMensajeChat() {
       const input = document.getElementById('chat-input');
       const texto = input.value.trim();
       if (!texto) return;
@@ -2633,7 +2715,11 @@
         chatBox.appendChild(msgDiv);
         input.value = '';
 
-        guardarMensajeChat(texto, 'estudiante');
+        try {
+          await guardarMensajeChat(texto, 'estudiante', usuarioSesion.ci);
+        } catch (error) {
+          alert('No se pudo enviar la consulta. Verifica que el servidor esté encendido.');
+        }
 
         setTimeout(() => {
           const autoReply = document.createElement('div');
@@ -2655,11 +2741,20 @@
         }, 800);
 
       } else if (usuarioSesion.rol === 'funcionario') {
+        const destinatarioCi = conversacionActivaCi || consultasChat.find(consulta => consulta.rol === 'estudiante' && !consulta.leido)?.usuario_ci;
+        if (!destinatarioCi) {
+          alert('Selecciona primero una consulta desde la campana.');
+          return;
+        }
         msgDiv.className = 'msg funcionario';
         msgDiv.innerHTML = `<strong>${escaparTexto(usuarioSesion.nombre)} (Funcionario):</strong> ${escaparTexto(texto)}`;
         chatBox.appendChild(msgDiv);
         input.value = '';
-        guardarMensajeChat(texto, 'funcionario');
+        try {
+          await guardarMensajeChat(texto, 'funcionario', destinatarioCi);
+        } catch (error) {
+          alert('No se pudo guardar la respuesta en el servidor.');
+        }
       }
 
       chatBox.scrollTop = chatBox.scrollHeight;
