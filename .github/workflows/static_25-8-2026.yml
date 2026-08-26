@@ -1,0 +1,2754 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Biblioteca Central - Portal Institucional</title>
+  
+  <link rel="icon" type="image/png" href="https://cdn-icons-png.flaticon.com/512/2232/2232688.png">
+
+  <style>
+    :root {
+      --bg-body: #fcfbf9;
+      --text-main: #333333;
+      --bg-card: #f9f6f0;
+      --border-card: #e0d8cc;
+      --bg-navbar: #1c140d;
+      --text-navbar: #fdf6e3;
+      --primary-btn: #704214;
+      --primary-btn-hover: #52300e;
+      --accent-color: #d4a373;
+      --input-bg: #ffffff;
+      --input-border: #ccc;
+    }
+
+    /* MODO OSCURO */
+    body.dark-mode {
+      --bg-body: #121212;
+      --text-main: #e0e0e0;
+      --bg-card: #1e1e1e;
+      --border-card: #333333;
+      --bg-navbar: #0a0a0a;
+      --text-navbar: #ffffff;
+      --primary-btn: #d4a373;
+      --primary-btn-hover: #b38253;
+      --accent-color: #e0b992;
+      --input-bg: #2a2a2a;
+      --input-border: #444;
+    }
+
+    body.dark-mode .btn-primary {
+      color: #121212;
+    }
+
+    body.dark-mode .login-box {
+      background-color: #d8b878;
+      color: #3f2815;
+    }
+
+    body.dark-mode .login-box h1, body.dark-mode .login-box label {
+      color: #52300e;
+    }
+
+    body.dark-mode .login-box p.sub {
+      color: #704214;
+    }
+
+    body.dark-mode .seccion-container h2, body.dark-mode .categoria-titulo {
+      color: #d4a373;
+    }
+
+    body.dark-mode .libro-card h4 {
+      color: #ffffff;
+    }
+
+    body.dark-mode .libro-card p.autor {
+      color: #aaa;
+    }
+
+    body.dark-mode .msg.estudiante {
+      background-color: #333;
+      color: #fff;
+    }
+
+    body.dark-mode .msg.funcionario {
+      background-color: #d4a373;
+      color: #121212;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      background-color: var(--bg-body);
+      color: var(--text-main);
+      transition: background-color 0.3s, color 0.3s;
+    }
+
+    /* BANNER HORARIO DE ATENCIÓN */
+    .banner-horario {
+      padding: 0.8rem 1.5rem;
+      text-align: center;
+      font-weight: bold;
+      font-size: 0.95rem;
+      border-bottom: 2px solid rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .banner-horario.abierto {
+      background-color: #2e7d32;
+      color: #ffffff;
+    }
+
+    .banner-horario.cerrado {
+      background-color: #c62828;
+      color: #ffffff;
+    }
+
+    /* LOGIN */
+    .login-screen {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-image: linear-gradient(rgba(24, 12, 4, 0.78), rgba(24, 12, 4, 0.78)), url('https://images.unsplash.com/photo-1507842217343-583bb7270b66?q=80&w=1200');
+      background-size: cover;
+      background-position: center;
+      padding: 1rem;
+    }
+
+    .login-box {
+      position: relative;
+      width: 100%;
+      max-width: 400px;
+      background-color: #e3c487;
+      background-image: repeating-linear-gradient(0deg, rgba(91, 49, 13, 0.06) 0, rgba(91, 49, 13, 0.06) 1px, transparent 1px, transparent 5px), linear-gradient(90deg, rgba(255, 245, 200, 0.28), transparent 18%, rgba(104, 57, 16, 0.08) 85%, rgba(255, 245, 200, 0.25));
+      padding: 3rem 2.25rem;
+      border: 1px solid #8b5a25;
+      border-radius: 8px 5px 8px 5px;
+      box-shadow: 0 12px 28px rgba(0, 0, 0, 0.6), inset 0 0 0 8px rgba(119, 73, 25, 0.12), inset 0 0 0 10px rgba(255, 239, 180, 0.3);
+      color: #3f2815;
+    }
+
+    .login-box::before,
+    .login-box::after {
+      content: '';
+      position: absolute;
+      left: -7px;
+      right: -7px;
+      height: 18px;
+      border: 1px solid #8b5a25;
+      background: linear-gradient(to bottom, #b47b36, #e3c487 45%, #9b6427);
+      border-radius: 50%;
+      box-shadow: 0 3px 4px rgba(47, 24, 5, 0.35);
+    }
+
+    .login-box::before {
+      top: -8px;
+    }
+
+    .login-box::after {
+      bottom: -8px;
+    }
+
+    .login-box h1 {
+      color: #52300e;
+      text-align: center;
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 2rem;
+      letter-spacing: 0;
+      margin-bottom: 0.3rem;
+      text-shadow: 1px 1px 0 rgba(255, 239, 180, 0.6);
+    }
+
+    .login-box p.sub {
+      text-align: center;
+      font-size: 0.85rem;
+      color: #704214;
+      margin-bottom: 1.5rem;
+      font-style: italic;
+    }
+
+    .login-box label {
+      display: block;
+      font-weight: bold;
+      font-size: 0.85rem;
+      margin-bottom: 0.3rem;
+      color: #52300e;
+    }
+
+    input, select, textarea {
+      background-color: var(--input-bg);
+      border: 1px solid var(--input-border);
+      color: var(--text-main);
+    }
+
+    .login-box input, .login-box select {
+      width: 100%;
+      padding: 0.65rem;
+      margin-bottom: 1rem;
+      border-radius: 2px;
+      border-color: #a9783b;
+      box-shadow: inset 0 1px 3px rgba(75, 39, 9, 0.16);
+    }
+
+    .login-actions {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-top: 0.5rem;
+    }
+
+    .btn-group {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .btn-primary {
+      background-color: var(--primary-btn);
+      color: #fff;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.95rem;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+
+    .btn-primary:hover {
+      background-color: var(--primary-btn-hover);
+    }
+
+    .btn-secondary {
+      background-color: var(--accent-color);
+      color: #1c140d;
+      border: none;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: bold;
+      flex: 1;
+      transition: background-color 0.2s;
+    }
+
+    .btn-secondary:hover {
+      background-color: #b38253;
+    }
+
+    .btn-clear {
+      background-color: #8b0000;
+      color: #fff;
+      border: none;
+      padding: 0.5rem 1rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-top: 0.3rem;
+      transition: background-color 0.2s;
+    }
+
+    .btn-clear:hover {
+      background-color: #660000;
+    }
+
+    .login-msg {
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    /* CONTENIDO PRINCIPAL */
+    #main-portal {
+      display: none;
+      padding-top: 60px;
+    }
+
+    .libros-volando {
+      position: fixed;
+      top: 50%;
+      width: 120px;
+      height: 260px;
+      transform: translateY(-50%);
+      pointer-events: none;
+      z-index: 2;
+    }
+
+    .libros-volando.izquierda {
+      left: 0;
+    }
+
+    .libros-volando.derecha {
+      right: 0;
+    }
+
+    .libro-decorativo {
+      position: absolute;
+      width: 58px;
+      height: 76px;
+      border: 2px solid #704214;
+      border-radius: 3px 7px 7px 3px;
+      background: linear-gradient(90deg, #52300e 0 8px, #d4a373 8px 100%);
+      box-shadow: 3px 4px 0 rgba(59, 33, 13, 0.45);
+      animation: libroFlotando 4.5s ease-in-out infinite;
+    }
+
+    .libro-decorativo::after {
+      content: '';
+      position: absolute;
+      top: 10px;
+      right: 7px;
+      width: 34px;
+      height: 2px;
+      background: #fdf6e3;
+      box-shadow: 0 8px #fdf6e3, 0 16px #fdf6e3, 0 24px #fdf6e3;
+      opacity: 0.65;
+    }
+
+    .libros-volando .libro-uno {
+      top: 18px;
+      left: 34px;
+      transform: rotate(-18deg);
+    }
+
+    .libros-volando .libro-dos {
+      top: 116px;
+      left: 8px;
+      transform: rotate(14deg);
+      animation-delay: -1.4s;
+    }
+
+    .libros-volando .libro-tres {
+      top: 190px;
+      left: 48px;
+      transform: rotate(-7deg);
+      animation-delay: -2.7s;
+    }
+
+    .libros-volando.derecha .libro-uno {
+      transform: rotate(18deg);
+    }
+
+    .libros-volando.derecha .libro-dos {
+      transform: rotate(-14deg);
+    }
+
+    .libros-volando.derecha .libro-tres {
+      transform: rotate(7deg);
+    }
+
+    @keyframes libroFlotando {
+      0%, 100% { margin-top: 0; }
+      50% { margin-top: -14px; }
+    }
+
+    @media (max-width: 1200px) {
+      .libros-volando {
+        display: none;
+      }
+    }
+
+    /* NAVBAR FIJA CON RELOJ Y CONTACTO */
+    .navbar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 60px;
+      background-color: var(--bg-navbar);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0 1.5rem;
+      z-index: 1000;
+      box-shadow: 0 2px 5px rgba(0,0,0,0.3);
+    }
+
+    .navbar-logo {
+      color: var(--text-navbar);
+      font-weight: bold;
+      font-size: 1.1rem;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .navbar-logo img {
+      width: 28px;
+      height: 28px;
+    }
+
+    .digital-clock {
+      background-color: rgba(212, 163, 115, 0.2);
+      border: 1px solid var(--accent-color);
+      color: var(--accent-color);
+      padding: 0.3rem 0.8rem;
+      border-radius: 6px;
+      font-family: monospace;
+      font-size: 1rem;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+
+    .contact-quick-links {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .contact-link-btn {
+      color: #ffffff;
+      text-decoration: none;
+      font-size: 0.8rem;
+      font-weight: bold;
+      padding: 0.35rem 0.7rem;
+      border-radius: 4px;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+      transition: opacity 0.2s;
+    }
+
+    .contact-link-btn:hover {
+      opacity: 0.85;
+    }
+
+    .btn-tel { background-color: #2b5b84; }
+    .btn-cel { background-color: #25d366; color: #000; }
+
+    .navbar-menu {
+      display: flex;
+      list-style: none;
+      gap: 0.6rem;
+      align-items: center;
+    }
+
+    .navbar-menu .nav-book {
+      position: relative;
+      display: flex;
+      align-items: center;
+      min-height: 34px;
+      padding: 0.45rem 0.7rem 0.45rem 0.95rem;
+      color: #fdf6e3;
+      text-decoration: none;
+      font-size: 0.85rem;
+      font-weight: bold;
+      background: linear-gradient(90deg, #704214 0 8px, #9b6230 8px 100%);
+      border: 1px solid #d4a373;
+      border-radius: 2px 5px 5px 2px;
+      box-shadow: 2px 3px 0 #3b210d;
+      transform-origin: left center;
+      transition: transform 0.25s ease, color 0.2s, box-shadow 0.25s;
+    }
+
+    .navbar-menu .nav-book::after {
+      content: '';
+      position: absolute;
+      right: 4px;
+      top: 4px;
+      bottom: 4px;
+      width: 3px;
+      background: repeating-linear-gradient(to bottom, #fdf6e3 0 1px, #d4a373 1px 3px);
+      opacity: 0.8;
+    }
+
+    .navbar-menu .nav-book:hover {
+      color: #ffffff;
+      transform: translateY(-2px) rotate(-2deg);
+      box-shadow: 3px 5px 0 #3b210d;
+    }
+
+    .navbar-menu .nav-book.abierto {
+      transform: perspective(120px) rotateY(-24deg) translateY(-2px);
+      box-shadow: 7px 4px 0 #3b210d;
+      background: linear-gradient(90deg, #52300e 0 8px, #d4a373 8px 100%);
+    }
+
+    .navbar-menu .nav-book:focus-visible {
+      outline: 2px solid #ffffff;
+      outline-offset: 3px;
+    }
+
+    .notificaciones-funcionario {
+      position: relative;
+      display: none;
+    }
+
+    .btn-campana {
+      position: relative;
+      background: transparent;
+      border: 0;
+      color: var(--text-navbar);
+      font-size: 1.25rem;
+      cursor: pointer;
+      padding: 0.35rem;
+    }
+
+    .contador-notificaciones {
+      position: absolute;
+      top: -0.2rem;
+      right: -0.25rem;
+      min-width: 1.1rem;
+      height: 1.1rem;
+      padding: 0 0.25rem;
+      background-color: #c62828;
+      color: #fff;
+      border: 1px solid #fff;
+      border-radius: 50%;
+      font-size: 0.7rem;
+      font-weight: bold;
+      line-height: 1rem;
+      text-align: center;
+    }
+
+    .lista-notificaciones {
+      position: absolute;
+      top: 2.2rem;
+      right: 0;
+      z-index: 20;
+      display: none;
+      width: 290px;
+      max-height: 300px;
+      overflow-y: auto;
+      padding: 0.7rem;
+      background-color: var(--bg-card);
+      color: var(--text-main);
+      border: 1px solid var(--border-card);
+      border-radius: 4px;
+      box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    }
+
+    .notificacion-chat {
+      padding: 0.6rem;
+      border-bottom: 1px solid var(--border-card);
+      font-size: 0.8rem;
+    }
+
+    .notificacion-chat:last-child {
+      border-bottom: 0;
+    }
+
+    @media (max-width: 900px) {
+      .navbar {
+        height: auto;
+        min-height: 60px;
+        flex-wrap: wrap;
+        gap: 0.4rem;
+        padding: 0.5rem 0.8rem;
+      }
+
+      #main-portal {
+        padding-top: 92px;
+      }
+
+      .navbar-menu {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+    }
+
+    .usuario-badge {
+      color: var(--accent-color);
+      font-size: 0.85rem;
+      font-weight: bold;
+    }
+
+    .btn-theme-toggle {
+      background: none;
+      border: 1px solid var(--accent-color);
+      color: var(--text-navbar);
+      padding: 0.3rem 0.6rem;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+
+    .btn-logout {
+      background-color: #8b0000;
+      color: white;
+      border: none;
+      padding: 0.4rem 0.8rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    /* CARRUSEL */
+    .inicio-section {
+      width: 100%;
+      position: relative;
+    }
+
+    .carousel-container-full {
+      position: relative;
+      width: 100%;
+      height: 75vh;
+      min-height: 400px;
+      overflow: hidden;
+      background-color: #1c140d;
+    }
+
+    .carousel-slide {
+      display: none;
+      position: relative;
+      width: 100%;
+      height: 100%;
+      transition: opacity 0.6s ease-in-out;
+    }
+
+    .carousel-slide.active {
+      display: block;
+    }
+
+    .carousel-slide img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .carousel-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(to bottom, rgba(0,0,0,0.2), rgba(0, 0, 0, 0.85));
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding-bottom: 3rem;
+      text-align: center;
+      color: #fdf6e3;
+    }
+
+    .carousel-overlay h2 {
+      font-size: 2.2rem;
+      margin-bottom: 0.5rem;
+      text-shadow: 2px 2px 4px rgba(0,0,0,0.8);
+    }
+
+    .carousel-overlay p {
+      font-size: 1.1rem;
+      color: #d4a373;
+      text-shadow: 1px 1px 3px rgba(0,0,0,0.8);
+    }
+
+    /* SECCIONES Y CATÁLOGOS */
+    .seccion-container {
+      max-width: 1100px;
+      margin: 3rem auto;
+      padding: 0 1rem;
+      scroll-margin-top: 70px;
+    }
+
+    .seccion-container h2 {
+      color: #52300e;
+      margin-bottom: 1rem;
+    }
+
+    .search-container {
+      margin-bottom: 2rem;
+      display: flex;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+      background-color: var(--bg-card);
+      padding: 1rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-card);
+    }
+
+    .search-container input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      font-size: 1rem;
+    }
+
+    .search-container select {
+      min-width: 190px;
+      padding: 0.75rem 1rem;
+      border-radius: 4px;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+
+    .categoria-titulo {
+      color: #704214;
+      border-bottom: 2px solid var(--accent-color);
+      padding-bottom: 0.3rem;
+      margin: 2.5rem 0 1rem 0;
+      font-size: 1.3rem;
+    }
+
+    .grid-libros {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+      gap: 1.2rem;
+    }
+
+    .novedades-semanales {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid var(--accent-color);
+      padding: 1.2rem;
+      margin-bottom: 2rem;
+      border-radius: 6px;
+    }
+
+    .novedades-semanales h3 {
+      color: var(--primary-btn);
+      margin-bottom: 0.8rem;
+    }
+
+    .novedades-lista {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 0.8rem;
+    }
+
+    .novedad-item {
+      padding: 0.8rem;
+      background-color: var(--bg-body);
+      border: 1px solid var(--border-card);
+      border-radius: 4px;
+    }
+
+    .novedad-item strong {
+      display: block;
+      color: var(--text-main);
+      margin-bottom: 0.25rem;
+    }
+
+    .novedad-item span {
+      color: var(--primary-btn);
+      font-size: 0.8rem;
+    }
+
+    .libro-card {
+      background-color: var(--bg-card);
+      border-radius: 6px;
+      border: 1px solid var(--border-card);
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    }
+
+    .portada-libro {
+      width: 100%;
+      aspect-ratio: 2 / 3;
+      object-fit: cover;
+      border-radius: 4px;
+      margin-bottom: 0.8rem;
+      background-color: var(--border-card);
+    }
+
+    .libro-card h4 {
+      color: #1c140d;
+      font-size: 0.95rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .libro-card p.autor {
+      color: #666;
+      font-size: 0.85rem;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+
+    .libro-card .subtag {
+      display: inline-block;
+      background-color: var(--border-card);
+      color: var(--text-main);
+      font-size: 0.7rem;
+      padding: 0.2rem 0.4rem;
+      border-radius: 3px;
+      font-weight: bold;
+      align-self: flex-start;
+      margin-bottom: 0.5rem;
+    }
+
+    .libro-card .estado {
+      font-size: 0.8rem;
+      font-weight: bold;
+      color: #2b7a2b;
+      margin-bottom: 0.5rem;
+    }
+
+    .btn-solicitar {
+      background-color: var(--primary-btn);
+      color: #fff;
+      border: none;
+      padding: 0.5rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      font-weight: bold;
+      transition: background-color 0.2s;
+    }
+
+    .btn-solicitar:hover {
+      background-color: var(--primary-btn-hover);
+    }
+
+    .btn-solicitar:disabled {
+      background-color: #888888 !important;
+      color: #e0e0e0 !important;
+      cursor: not-allowed;
+    }
+
+    /* TÓTEM Y LOCKERS */
+    .totem-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      background-color: var(--bg-card);
+      padding: 2rem;
+      border-radius: 6px;
+      border-left: 4px solid var(--primary-btn);
+    }
+
+    .lockers-panel {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.8rem;
+    }
+
+    .locker {
+      border-radius: 6px;
+      padding: 1.2rem 1rem;
+      text-align: center;
+      font-weight: bold;
+      cursor: pointer;
+      user-select: none;
+      transition: transform 0.2s, background-color 0.3s, border-color 0.3s;
+      border: 2px solid transparent;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+
+    .locker.disponible { 
+      background-color: #2e7d32; 
+      color: #ffffff; 
+      border-color: #1b5e20;
+    }
+
+    .locker.ocupado { 
+      background-color: #c62828; 
+      color: #ffffff; 
+      border-color: #8e0000;
+    }
+
+    .locker.abierto { 
+      background-color: #fbc02d; 
+      color: #1c140d; 
+      border-color: #f57f17; 
+      animation: pulse 1s infinite alternate; 
+    }
+
+    .locker.deshabilitado {
+      background-color: #666666 !important;
+      color: #cccccc !important;
+      border-color: #444444 !important;
+      cursor: not-allowed !important;
+    }
+
+    @keyframes pulse {
+      from { transform: scale(1); }
+      to { transform: scale(1.05); }
+    }
+
+    .btn-liberar-locker {
+      margin-top: 1rem;
+      width: 100%;
+      background-color: #8b0000;
+      color: white;
+      border: none;
+      padding: 0.75rem;
+      border-radius: 4px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+
+    .btn-liberar-locker:hover {
+      background-color: #660000;
+    }
+
+    .qr-scanner-box {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      border: 2px dashed var(--primary-btn);
+      border-radius: 6px;
+      padding: 1.5rem;
+      background-color: var(--bg-card);
+    }
+
+    .qr-scanner-box input {
+      width: 100%;
+      padding: 0.6rem;
+      margin: 0.8rem 0;
+      border-radius: 4px;
+      text-align: center;
+      font-weight: bold;
+    }
+
+    .teclado-totem {
+      width: 100%;
+      max-width: 260px;
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 0.5rem;
+      margin-bottom: 0.8rem;
+    }
+
+    .tecla-totem {
+      min-height: 42px;
+      border: 1px solid var(--border-card);
+      border-radius: 4px;
+      background-color: var(--input-bg);
+      color: var(--text-main);
+      font-size: 1.1rem;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    .tecla-totem:hover {
+      background-color: var(--accent-color);
+    }
+
+    .tecla-totem.accion {
+      background-color: var(--border-card);
+      font-size: 0.85rem;
+    }
+
+    .tecla-totem:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .qr-mockup {
+      width: 100px;
+      height: 100px;
+      margin: 0.5rem 0;
+      background: repeating-linear-gradient(45deg, #1c140d, #1c140d 10px, #fff 10px, #fff 20px);
+    }
+
+    .notificacion-retiro {
+      margin-top: 1rem;
+      padding: 0.8rem;
+      background-color: #e2f0d9;
+      border: 1px solid #2b7a2b;
+      color: #2b7a2b;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      font-weight: bold;
+      display: none;
+      text-align: center;
+    }
+
+    /* CONTACTO, CHATBOT & OPINÓMETRO */
+    .contacto-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+    }
+
+    .chatbot-box, .opinometro-box {
+      background-color: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-card);
+      display: flex;
+      flex-direction: column;
+    }
+
+    .chatbot-box {
+      height: 480px;
+    }
+
+    .chat-messages {
+      flex: 1;
+      overflow-y: auto;
+      border: 1px solid var(--input-border);
+      background-color: var(--bg-body);
+      border-radius: 4px;
+      padding: 0.8rem;
+      margin: 0.8rem 0;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+    }
+
+    .msg {
+      max-width: 80%;
+      padding: 0.5rem 0.8rem;
+      border-radius: 6px;
+      font-size: 0.85rem;
+      line-height: 1.3;
+    }
+
+    .msg.estudiante {
+      align-self: flex-start;
+      background-color: #e0d8cc;
+      color: #1c140d;
+    }
+
+    .msg.funcionario {
+      align-self: flex-end;
+      background-color: var(--primary-btn);
+      color: #fff;
+    }
+
+    .chat-input-box {
+      display: flex;
+      gap: 0.5rem;
+    }
+
+    .chat-input-box input {
+      flex: 1;
+      padding: 0.5rem;
+      border-radius: 4px;
+    }
+
+    .btn-whatsapp {
+      background-color: #25d366;
+      color: #000;
+      border: none;
+      padding: 0.5rem 0.7rem;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+
+    /* DIRECTORIO DE CONTACTO EN SECCIÓN */
+    .directorio-telefonos {
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      background-color: var(--bg-body);
+      border-radius: 6px;
+      border: 1px solid var(--border-card);
+    }
+
+    .directorio-telefonos h4 {
+      margin-bottom: 0.5rem;
+      color: var(--primary-btn);
+    }
+
+    .directorio-links {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    /* FORMULARIO OPINÓMETRO */
+    .form-opinion label {
+      display: block;
+      font-weight: bold;
+      font-size: 0.85rem;
+      margin-top: 0.8rem;
+      margin-bottom: 0.3rem;
+    }
+
+    .form-opinion input, .form-opinion textarea {
+      width: 100%;
+      padding: 0.6rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .form-opinion textarea {
+      height: 80px;
+      resize: vertical;
+    }
+
+    .estrellas-rating {
+      display: flex;
+      gap: 0.3rem;
+      font-size: 1.8rem;
+      color: #ccc;
+      cursor: pointer;
+      margin-bottom: 0.5rem;
+    }
+
+    .estrellas-rating .star:hover,
+    .estrellas-rating .star.active {
+      color: #d4a373;
+    }
+
+    .mapa-box {
+      grid-column: 1 / -1;
+      background-color: var(--bg-card);
+      padding: 1.5rem;
+      border-radius: 6px;
+      border: 1px solid var(--border-card);
+      margin-top: 1rem;
+    }
+
+    .mapa-box iframe {
+      width: 100%;
+      height: 250px;
+      border: none;
+      border-radius: 4px;
+      margin-top: 0.8rem;
+    }
+
+    .gestion-estudiantes {
+      display: none;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid var(--primary-btn);
+      padding: 1.5rem;
+      border-radius: 6px;
+    }
+
+    .gestion-estudiantes h3 {
+      color: var(--primary-btn);
+      margin-bottom: 0.8rem;
+    }
+
+    .registro-estudiante {
+      display: grid;
+      grid-template-columns: 1.2fr 1fr 1.2fr 1fr auto;
+      gap: 0.6rem;
+      margin-bottom: 1rem;
+    }
+
+    .registro-estudiante input {
+      width: 100%;
+      padding: 0.65rem;
+      border-radius: 4px;
+    }
+
+    .lista-estudiantes {
+      display: grid;
+      gap: 0.5rem;
+    }
+
+    .estudiante-registrado {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      padding: 0.7rem;
+      background-color: var(--bg-body);
+      border: 1px solid var(--border-card);
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    .btn-eliminar-estudiante {
+      background-color: #8b0000;
+      color: #fff;
+      border: none;
+      padding: 0.35rem 0.6rem;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    .estudiante-acciones {
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    .calendario-prestamos {
+      display: none;
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid var(--accent-color);
+      padding: 1.5rem;
+      border-radius: 6px;
+    }
+
+    .calendario-prestamos h3 {
+      color: var(--primary-btn);
+      margin-bottom: 0.5rem;
+    }
+
+    .alertas-devolucion {
+      display: none;
+      margin-top: 1rem;
+      padding: 0.9rem 1rem;
+      background-color: #fff3cd;
+      border: 1px solid #d39e00;
+      border-left: 4px solid #d39e00;
+      color: #664d03;
+      border-radius: 4px;
+      font-size: 0.9rem;
+    }
+
+    body.dark-mode .alertas-devolucion {
+      background-color: #3d3218;
+      color: #ffe69c;
+      border-color: #d39e00;
+    }
+
+    .lista-prestamos {
+      display: grid;
+      gap: 0.6rem;
+      margin-top: 1rem;
+    }
+
+    .prestamo-item {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 0.8rem;
+      padding: 0.8rem;
+      background-color: var(--bg-body);
+      border: 1px solid var(--border-card);
+      border-radius: 4px;
+    }
+
+    .prestamo-item strong {
+      display: block;
+      margin-bottom: 0.25rem;
+    }
+
+    .prestamo-fecha {
+      color: var(--primary-btn);
+      font-size: 0.85rem;
+      font-weight: bold;
+      text-align: right;
+    }
+
+    .btn-recordatorio {
+      display: inline-block;
+      margin-top: 0.45rem;
+      padding: 0.35rem 0.55rem;
+      background-color: #25d366;
+      color: #000;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: bold;
+      text-decoration: none;
+    }
+
+    .prestamo-retirado {
+      color: #2b7a2b;
+      font-size: 0.8rem;
+    }
+
+    .comparador-precios {
+      margin-top: 1rem;
+      overflow-x: auto;
+    }
+
+    .comparador-precios select {
+      width: 100%;
+      max-width: 480px;
+      padding: 0.65rem;
+      border-radius: 4px;
+      margin: 0.5rem 0 1rem;
+    }
+
+    .tabla-precios {
+      width: 100%;
+      min-width: 620px;
+      border-collapse: collapse;
+      font-size: 0.85rem;
+    }
+
+    .tabla-precios th,
+    .tabla-precios td {
+      padding: 0.7rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border-card);
+    }
+
+    .tabla-precios th {
+      background-color: var(--primary-btn);
+      color: #fff;
+    }
+
+    .tabla-precios a {
+      color: var(--primary-btn);
+      font-weight: bold;
+    }
+
+    .musica-box {
+      background-color: var(--bg-card);
+      border: 1px solid var(--border-card);
+      border-left: 4px solid #25d366;
+      padding: 1.5rem;
+      border-radius: 6px;
+      margin-bottom: 2rem;
+    }
+
+    .musica-box h3 {
+      color: var(--primary-btn);
+      margin-bottom: 0.4rem;
+    }
+
+    .musica-controles {
+      display: flex;
+      gap: 0.6rem;
+      margin: 1rem 0;
+    }
+
+    .musica-controles input {
+      flex: 1;
+      min-width: 0;
+      padding: 0.65rem;
+      border-radius: 4px;
+    }
+
+    .musica-player {
+      width: 100%;
+      height: 180px;
+      border: 0;
+      border-radius: 4px;
+      background-color: #111;
+    }
+
+    .musica-cuenta {
+      color: #666;
+      font-size: 0.8rem;
+    }
+
+    @media (max-width: 700px) {
+      .registro-estudiante {
+        grid-template-columns: 1fr;
+      }
+
+      .estudiante-registrado {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+    }
+
+    .pie-pagina {
+      background-color: var(--bg-navbar);
+      color: var(--text-navbar);
+      padding: 2rem 1rem 1rem 1rem;
+      margin-top: 3rem;
+      text-align: center;
+    }
+
+    .redes-sociales {
+      display: flex;
+      justify-content: center;
+      gap: 1.5rem;
+      margin-bottom: 1.2rem;
+    }
+
+    .red-link {
+      color: var(--text-navbar);
+      text-decoration: none;
+      font-size: 0.9rem;
+      transition: color 0.2s;
+    }
+
+    .red-link:hover {
+      color: var(--accent-color);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- PANTALLA LOGIN -->
+  <div id="auth-screen" class="login-screen">
+    <div class="login-box">
+      <h1>Biblioteca Central</h1>
+      <p class="sub">Portal Institucional</p>
+
+      <form id="auth-form" onsubmit="event.preventDefault();">
+        <label for="login-rol">Rol de Acceso</label>
+        <select id="login-rol">
+          <option value="estudiante">Estudiante</option>
+          <option value="funcionario">Funcionario</option>
+        </select>
+
+        <label for="login-nombre">Nombre y Apellido</label>
+        <input type="text" id="login-nombre" placeholder="Ej. Juan Pérez" required>
+
+        <label for="login-usuario">Cédula de Identidad</label>
+        <input type="text" id="login-usuario" placeholder="Ej. 12345678" required>
+
+        <label for="login-email">Correo Electrónico</label>
+        <input type="email" id="login-email" placeholder="ejemplo@correo.com">
+
+        <label for="login-celular">Número de celular</label>
+        <input type="tel" id="login-celular" placeholder="Ej. 099 123 456" inputmode="tel" required>
+
+        <label for="login-pass">Contraseña</label>
+        <input type="password" id="login-pass" placeholder="••••••••" required>
+
+        <div class="login-actions">
+          <div class="btn-group">
+            <button type="button" class="btn-primary" style="flex: 1;" onclick="iniciarSesion()">Ingresar</button>
+            <button type="button" class="btn-secondary" onclick="registrarUsuario()">Registrar</button>
+          </div>
+          <button type="button" class="btn-clear" onclick="limpiarDatosGuardados()">Limpiar datos</button>
+        </div>
+        <p id="login-msg" class="login-msg"></p>
+      </form>
+    </div>
+  </div>
+
+  <!-- PORTAL PRINCIPAL -->
+  <div id="main-portal">
+
+    <div class="libros-volando izquierda" aria-hidden="true">
+      <span class="libro-decorativo libro-uno"></span>
+      <span class="libro-decorativo libro-dos"></span>
+      <span class="libro-decorativo libro-tres"></span>
+    </div>
+    <div class="libros-volando derecha" aria-hidden="true">
+      <span class="libro-decorativo libro-uno"></span>
+      <span class="libro-decorativo libro-dos"></span>
+      <span class="libro-decorativo libro-tres"></span>
+    </div>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+      <a href="#inicio" class="navbar-logo">
+        <img src="https://cdn-icons-png.flaticon.com/512/2232/2232688.png" alt="Logo">
+        Biblioteca
+      </a>
+
+      <!-- RELOJ DIGITAL -->
+      <div id="reloj-digital" class="digital-clock">00:00:00</div>
+
+      <!-- BOTONES DIRECTOS PARA LLAMAR / MENSAJEAR -->
+      <div class="contact-quick-links">
+        <a href="tel:2 408 66 66" class="contact-link-btn btn-tel" title="Llamar a Biblioteca">
+          📞 2 408 66 66
+        </a>
+        <a href="https://wa.me/59899312136?text=Hola%20Biblioteca%20Central%2C%20necesito%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" class="contact-link-btn btn-cel" title="Enviar mensaje de WhatsApp">
+          📱 WhatsApp 099 312 136
+        </a>
+        <a href="tel:+59899312136" class="contact-link-btn btn-cel" title="Llamar al WhatsApp de la biblioteca">
+          📞 Llamar celular
+        </a>
+      </div>
+
+      <ul class="navbar-menu">
+        <li><a href="#inicio" class="nav-book" onclick="abrirLibroNav(this, event)">Inicio</a></li>
+        <li><a href="#catalogo" class="nav-book" onclick="abrirLibroNav(this, event)">Catálogo</a></li>
+        <li><a href="#totem" class="nav-book" onclick="abrirLibroNav(this, event)">Lockers</a></li>
+        <li><a href="#calendario" class="nav-book" onclick="abrirLibroNav(this, event)">Calendario</a></li>
+        <li><a href="#musica" class="nav-book" onclick="abrirLibroNav(this, event)">Música</a></li>
+        <li><a href="#contacto" class="nav-book" onclick="abrirLibroNav(this, event)">Contacto</a></li>
+        <li>
+          <button class="btn-theme-toggle" onclick="toggleTema()">
+            <span id="theme-icon">🌙</span> <span id="theme-text">Oscuro</span>
+          </button>
+        </li>
+        <li id="notificaciones-funcionario" class="notificaciones-funcionario">
+          <button type="button" class="btn-campana" title="Notificaciones de consultas" onclick="toggleNotificacionesFuncionario(event)">
+            🔔<span id="contador-notificaciones" class="contador-notificaciones" hidden>0</span>
+          </button>
+          <div id="lista-notificaciones" class="lista-notificaciones"></div>
+        </li>
+        <li><span id="user-display" class="usuario-badge"></span></li>
+        <li><button class="btn-logout" onclick="cerrarSesion()">Salir</button></li>
+      </ul>
+    </nav>
+
+    <!-- BANNER DE HORARIO Y ESTADO -->
+    <div id="banner-horario" class="banner-horario">
+      <span id="banner-texto">Comprobando horario de atención...</span>
+    </div>
+
+    <!-- INICIO: CARRUSEL -->
+    <section id="inicio" class="inicio-section">
+      <div class="carousel-container-full">
+        <div class="carousel-slide active">
+          <img src="https://encrypted-tbn0.gstatic.com/licensed-image?q=tbn:ANd9GcSsTRP4dztsrQMIDaiqfOBXK0Hh8uuIqv2t2NQd115BiX1JyEoDmmJt7fsO3tmIJo_cpRqXvNb9tMOMULI" alt="Biblioteca Clementinum">
+          <div class="carousel-overlay">
+            <h2>Biblioteca Clementinum</h2>
+            <p>Praga, República Checa</p>
+          </div>
+        </div>
+
+        <div class="carousel-slide">
+          <img src="https://encrypted-tbn3.gstatic.com/licensed-image?q=tbn:ANd9GcRDiRAaNsRyJmxPGdvV7P07kFx6k0NtFfSlccOP0vB_mvzkxjZaGY_VFucnjB72xwVzRlIQ75yJ3srdc" alt="Trinity College Dublin">
+          <div class="carousel-overlay">
+            <h2>Biblioteca del Trinity College</h2>
+            <p>Dublín, Irlanda</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- CATÁLOGOS -->
+    <section id="catalogo" class="seccion-container">
+      <h2>Catálogo Bibliográfico (80 Ejemplares)</h2>
+
+      <div class="search-container">
+        <input type="text" id="input-busqueda" placeholder="🔍 Buscar por título, autor o subcategoría..." onkeyup="filtrarLibros()">
+        <select id="filtro-genero" aria-label="Filtrar catálogo por género" onchange="filtrarLibros()">
+          <option value="Todos">Todos los géneros</option>
+          <option value="Primaria">Primaria</option>
+          <option value="Secundaria">Secundaria</option>
+          <option value="Facultad">Facultad</option>
+          <option value="Tecnología">Tecnología</option>
+          <option value="Ciencia Ficción">Ciencia Ficción</option>
+          <option value="Fantasía">Fantasía</option>
+          <option value="Romántica">Romántica</option>
+          <option value="Policial / Misterio">Policial / Misterio</option>
+          <option value="Misterio">Misterio</option>
+          <option value="Narrativa">Narrativa</option>
+          <option value="Thriller">Thriller</option>
+          <option value="Historia">Historia</option>
+          <option value="Ciencia">Ciencia</option>
+          <option value="Filosofía">Filosofía</option>
+          <option value="Economía">Economía</option>
+          <option value="Finanzas">Finanzas</option>
+          <option value="Negocios">Negocios</option>
+          <option value="Clásicos">Clásicos</option>
+          <option value="Teatro">Teatro</option>
+          <option value="Juvenil">Juvenil</option>
+        </select>
+      </div>
+
+      <div class="novedades-semanales">
+        <h3>📚 Novedades semanales</h3>
+        <div id="novedades-lista" class="novedades-lista"></div>
+      </div>
+
+      <!-- PRIMARIA -->
+      <h3 class="categoria-titulo">🏫 Escuela / Educación Primaria (8)</h3>
+      <div class="grid-libros">
+        <div class="libro-card"><span class="subtag">Primaria</span><h4>El Principito</h4><p class="autor">Antoine de Saint-Exupéry</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('El Principito', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Primaria</span><h4>Mi planta de naranja lima</h4><p class="autor">José Mauro de Vasconcelos</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Mi planta de naranja lima', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Primaria</span><h4>Cuentos de la selva</h4><p class="autor">Horacio Quiroga</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Cuentos de la selva', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Primaria</span><h4>Matilda</h4><p class="autor">Roald Dahl</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Matilda', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Primaria</span><h4>Charlie y la fábrica de chocolate</h4><p class="autor">Roald Dahl</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Charlie y la fábrica de chocolate', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Primaria</span><h4>El monstruo de colores</h4><p class="autor">Anna Llenas</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('El monstruo de colores', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Primaria</span><h4>Cuentos para jugar</h4><p class="autor">Gianni Rodari</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Cuentos para jugar', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Primaria</span><h4>Aborígenes del Uruguay</h4><p class="autor">Aníbal Barrios Pintos</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Aborígenes del Uruguay', this)">Pedir Libro</button></div>
+      </div>
+
+      <!-- SECUNDARIA -->
+      <h3 class="categoria-titulo">📖 Liceo / Educación Secundaria (8)</h3>
+      <div class="grid-libros">
+        <div class="libro-card"><span class="subtag">Secundaria</span><h4>Matemática 1: Álgebra y Geometría</h4><p class="autor">Editorial Santillana</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Matemática 1', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Secundaria</span><h4>Física Fundamental: Mecánica</h4><p class="autor">Paul E. Tippens</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Física Fundamental', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Secundaria</span><h4>Química General e Inorgánica</h4><p class="autor">Raymond Chang</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Química General', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Secundaria</span><h4>Biología: La vida en la Tierra</h4><p class="autor">Teresa Audesirk</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Biología Audesirk', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Secundaria</span><h4>Historia Universal Contemporánea</h4><p class="autor">Gloria M. Delgado</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Historia Universal', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Secundaria</span><h4>Geografía Mundial y Regional</h4><p class="autor">Omar Defeo</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Geografía Mundial', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Secundaria</span><h4>Lengua Española y Literatura</h4><p class="autor">Fernando Lázaro Carreter</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Lengua Española', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Secundaria</span><h4>La Tregua</h4><p class="autor">Mario Benedetti</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('La Tregua', this)">Pedir Libro</button></div>
+      </div>
+
+      <!-- FACULTAD -->
+      <h3 class="categoria-titulo">🎓 Facultad y Formación Universitaria (8)</h3>
+      <div class="grid-libros">
+        <div class="libro-card"><span class="subtag">Facultad</span><h4>Cálculo de una Variable</h4><p class="autor">James Stewart</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Cálculo Stewart', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Facultad</span><h4>Álgebra Lineal y sus Aplicaciones</h4><p class="autor">David C. Lay</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Álgebra Lineal Lay', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Facultad</span><h4>Física para Ciencias e Ingeniería</h4><p class="autor">Serway & Jewett</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Física Serway', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Facultad</span><h4>Principios de Economía</h4><p class="autor">N. Gregory Mankiw</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Economía Mankiw', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Facultad</span><h4>Anatomía Humana</h4><p class="autor">Frank H. Netter</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Anatomía Netter', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Facultad</span><h4>Derecho Civil: Parte General</h4><p class="autor">Eduardo Coutures</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Derecho Civil', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Facultad</span><h4>Psicología General</h4><p class="autor">Charles G. Morris</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Psicología General', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Facultad</span><h4>Estrategia Competitiva</h4><p class="autor">Michael E. Porter</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Estrategia Porter', this)">Pedir Libro</button></div>
+      </div>
+
+      <!-- TECNOLOGÍA -->
+      <h3 class="categoria-titulo">💻 Carreras Tecnológicas y Software (8)</h3>
+      <div class="grid-libros">
+        <div class="libro-card"><span class="subtag">Tecnología</span><h4>Clean Code</h4><p class="autor">Robert C. Martin</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Clean Code', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Tecnología</span><h4>Design Patterns</h4><p class="autor">Erich Gamma et al.</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Design Patterns', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Tecnología</span><h4>Introduction to Algorithms</h4><p class="autor">Cormen, Leiserson, Rivest</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Algorithms Cormen', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Tecnología</span><h4>Redes de Computadoras</h4><p class="autor">Andrew S. Tanenbaum</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Redes Tanenbaum', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Tecnología</span><h4>Sistemas Operativos Modernos</h4><p class="autor">Andrew S. Tanenbaum</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Sistemas Operativos', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Tecnología</span><h4>Artificial Intelligence</h4><p class="autor">Stuart Russell, Peter Norvig</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('AI Russell', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Tecnología</span><h4>Fundamentos de Bases de Datos</h4><p class="autor">Silberschatz, Korth</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Bases de Datos', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Tecnología</span><h4>You Don't Know JS Yet</h4><p class="autor">Kyle Simpson</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('YDKJS', this)">Pedir Libro</button></div>
+      </div>
+
+      <!-- OTROS GÉNEROS -->
+      <h3 class="categoria-titulo">📚 Géneros Variados: Ficción, Thriller y Narrativa (8)</h3>
+      <div class="grid-libros">
+        <div class="libro-card"><span class="subtag">Ciencia Ficción</span><h4>1984</h4><p class="autor">George Orwell</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('1984', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Ciencia Ficción</span><h4>Dune</h4><p class="autor">Frank Herbert</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Dune', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Fantasía</span><h4>El Hobbit</h4><p class="autor">J.R.R. Tolkien</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('El Hobbit', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Romántica</span><h4>Orgullo y Prejuicio</h4><p class="autor">Jane Austen</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Orgullo y Prejuicio', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Policial / Misterio</span><h4>Estudio en Escarlata</h4><p class="autor">Arthur Conan Doyle</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Estudio en Escarlata', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Misterio</span><h4>El código Da Vinci</h4><p class="autor">Dan Brown</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('El código Da Vinci', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Desarrollo Personal</span><h4>Hábitos Atómicos</h4><p class="autor">James Clear</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Hábitos Atómicos', this)">Pedir Libro</button></div>
+        <div class="libro-card"><span class="subtag">Narrativa</span><h4>Cien años de soledad</h4><p class="autor">Gabriel García Márquez</p><span class="estado">Disponible</span><button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('Cien años de soledad', this)">Pedir Libro</button></div>
+      </div>
+
+      <h3 class="categoria-titulo">🆕 Nuevas incorporaciones (40)</h3>
+      <div id="libros-adicionales" class="grid-libros"></div>
+    </section>
+
+    <!-- TÓTEM Y LOCKERS -->
+    <section id="totem" class="seccion-container">
+      <h2>Tótem de Autoservicio & Gestor de Lockers</h2>
+      <div class="totem-grid">
+        <div class="qr-scanner-box">
+          <h3>Retiro con Cédula</h3>
+          <p style="font-size: 0.8rem; color: #666; margin-top: 0.3rem;">Ingresa la Cédula para abrir tu casillero</p>
+          <div class="qr-mockup"></div>
+          <input type="text" id="totem-ci-input" placeholder="Ingresa tu C.I. (ej. 12345678)" maxlength="8" inputmode="numeric" readonly>
+          <div class="teclado-totem" aria-label="Teclado numérico del tótem">
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('1')">1</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('2')">2</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('3')">3</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('4')">4</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('5')">5</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('6')">6</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('7')">7</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('8')">8</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('9')">9</button>
+            <button type="button" class="tecla-totem accion" onclick="borrarTotem()">Borrar</button>
+            <button type="button" class="tecla-totem" onclick="agregarDigitoTotem('0')">0</button>
+            <button type="button" class="tecla-totem accion" onclick="borrarUltimoDigitoTotem()">⌫</button>
+          </div>
+          <button id="btn-totem-abrir" class="btn-primary" style="width: 100%;" onclick="autenticarTotemPorCI()">Abrir Casillero</button>
+        </div>
+
+        <div>
+          <h3>Estado de Lockers</h3>
+          <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.5rem;" id="locker-role-info">Cargando permisos...</p>
+          
+          <div class="lockers-panel">
+            <div id="locker-01" class="locker disponible" onclick="gestionarLocker('01', this)">01<br><small>Libre</small></div>
+            <div id="locker-02" class="locker ocupado" onclick="gestionarLocker('02', this)">02<br><small>Ocupado</small></div>
+            <div id="locker-03" class="locker disponible" onclick="gestionarLocker('03', this)">03<br><small>Libre</small></div>
+            <div id="locker-04" class="locker disponible" onclick="gestionarLocker('04', this)">04<br><small>Libre</small></div>
+            <div id="locker-05" class="locker ocupado" onclick="gestionarLocker('05', this)">05<br><small>Ocupado</small></div>
+            <div id="locker-06" class="locker disponible" onclick="gestionarLocker('06', this)">06<br><small>Libre</small></div>
+          </div>
+          
+          <button id="btn-liberar" class="btn-liberar-locker" onclick="liberarTodosLockers()">🔓 Liberar Todos los Lockers (Solo Funcionario)</button>
+          
+          <div id="notif-retiro" class="notificacion-retiro"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDARIO DE PRÉSTAMOS DEL ESTUDIANTE -->
+    <section id="calendario" class="seccion-container calendario-prestamos">
+      <h3>🗓️ Mi calendario de préstamos</h3>
+      <p style="font-size: 0.85rem; color: #666;">Aquí aparecerán tus retiros y las fechas previstas de devolución.</p>
+      <div id="alertas-devolucion" class="alertas-devolucion" role="status"></div>
+      <div id="lista-prestamos-estudiante" class="lista-prestamos"></div>
+    </section>
+
+    <!-- GESTIÓN DE ESTUDIANTES -->
+    <section id="gestion-estudiantes" class="seccion-container gestion-estudiantes">
+      <h3>👥 Registro de estudiantes</h3>
+      <p style="font-size: 0.85rem; color: #666; margin-bottom: 1rem;">Panel exclusivo del funcionario para dar de alta y controlar estudiantes.</p>
+      <form class="registro-estudiante" onsubmit="event.preventDefault(); registrarEstudiante();">
+        <input type="text" id="nuevo-estudiante-nombre" placeholder="Nombre completo" required>
+        <input type="text" id="nuevo-estudiante-ci" placeholder="Cédula" inputmode="numeric" maxlength="8" required>
+        <input type="email" id="nuevo-estudiante-email" placeholder="Correo electrónico" required>
+        <input type="tel" id="nuevo-estudiante-celular" placeholder="Celular" inputmode="tel" required>
+        <input type="password" id="nuevo-estudiante-password" placeholder="Contraseña inicial" required>
+        <button type="submit" class="btn-primary">Registrar</button>
+      </form>
+      <div id="lista-estudiantes" class="lista-estudiantes"></div>
+      <h3 style="margin-top: 1.5rem;">📋 Control de retiros</h3>
+      <div id="historial-prestamos-funcionario" class="lista-prestamos"></div>
+      <div class="comparador-precios">
+        <h3 style="margin-top: 1.5rem;">💰 Comparar precios en librerías de Uruguay</h3>
+        <p style="font-size: 0.85rem; color: #666;">Selecciona un libro para consultar el precio estimado y abrir la búsqueda en cada tienda.</p>
+        <select id="libro-comparar" aria-label="Seleccionar libro para comparar precios" onchange="renderizarComparacionPrecios()"></select>
+        <table class="tabla-precios">
+          <thead><tr><th>Librería</th><th>Precio estimado</th><th>Consultar</th></tr></thead>
+          <tbody id="tabla-precios-body"></tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- MÚSICA -->
+    <section id="musica" class="seccion-container musica-box">
+      <h3>🎵 YouTube Music de la biblioteca</h3>
+      <p class="musica-cuenta">Cuenta vinculada: losiacostalibtechuruguay@gmail.com</p>
+      <div class="musica-controles">
+        <input type="url" id="youtube-playlist-url" placeholder="Pega aquí la URL de una playlist pública de YouTube Music">
+        <button type="button" class="btn-primary" onclick="cargarPlaylistYouTube()">Cargar playlist</button>
+        <a class="btn-secondary" href="https://music.youtube.com/playlist?list=PLNnnzOWGcMaA" target="_blank">Abrir YouTube Music</a>
+      </div>
+      <iframe id="music-player" class="musica-player" title="Reproductor de YouTube Music" src="about:blank" allow="autoplay; encrypted-media" allowfullscreen></iframe>
+    </section>
+
+    <!-- CONTACTO, CHATBOT Y OPINÓMETRO -->
+    <section id="contacto" class="seccion-container">
+      <h2>Atención al Usuario, Chatbot & Valoración</h2>
+
+      <!-- LÍNEAS DIRECTAS DE ATENCIÓN -->
+      <div class="directorio-telefonos">
+        <h4>📞 Líneas Directas de Atención Directa:</h4>
+        <div class="directorio-links">
+          <a href="tel:+59829000000" class="contact-link-btn btn-tel">☎️ Teléfono Fijo: 2900 0000</a>
+          <a href="https://wa.me/59899312136?text=Hola%20Biblioteca%20Central%2C%20necesito%20informaci%C3%B3n." target="_blank" rel="noopener noreferrer" class="contact-link-btn btn-cel">📱 WhatsApp 099 312 136</a>
+          <a href="tel:+59899312136" class="contact-link-btn btn-cel">📞 Llamar celular</a>
+        </div>
+      </div>
+
+      <div class="contacto-grid">
+        
+        <!-- CHATBOT -->
+        <div class="chatbot-box">
+          <h3 id="chat-title">💬 Chatbot de Asistencia</h3>
+          <p style="font-size: 0.8rem; color: #666;" id="chat-subtitle">Estudiantes consultan, el funcionario responde.</p>
+          
+          <div class="chat-messages" id="chat-messages">
+            <div class="msg funcionario"><strong>Funcionario:</strong> Hola. ¿En qué podemos ayudarte hoy?</div>
+          </div>
+
+          <div class="chat-input-box">
+            <input type="text" id="chat-input" placeholder="Escribe tu mensaje...">
+            <button class="btn-primary" onclick="enviarMensajeChat()">Enviar</button>
+            <button type="button" class="btn-whatsapp" onclick="enviarDudaPorWhatsApp()">WhatsApp</button>
+          </div>
+        </div>
+
+        <!-- OPINÓMETRO Y FEEDBACK (ENVÍA CORREO ELECTRÓNICO REAL) -->
+        <div class="opinometro-box">
+          <h3>⭐ Opinómetro & Enviar Correo</h3>
+          <p style="font-size: 0.8rem; color: #666; margin-bottom: 0.5rem;">Envía tus comentarios directamente a nuestra casilla institucional.</p>
+
+          <form class="form-opinion" onsubmit="event.preventDefault(); enviarCorreoFeedback();">
+            <label for="op-nombre">Nombre Completo</label>
+            <input type="text" id="op-nombre" placeholder="Ej. Ana García" required>
+
+            <label for="op-email">Tu Correo Electrónico</label>
+            <input type="email" id="op-email" placeholder="ejemplo@correo.com" required>
+
+            <label>Calificación (Opinómetro)</label>
+            <div class="estrellas-rating" id="estrellas-box">
+              <span class="star" onclick="seleccionarEstrella(1)">★</span>
+              <span class="star" onclick="seleccionarEstrella(2)">★</span>
+              <span class="star" onclick="seleccionarEstrella(3)">★</span>
+              <span class="star" onclick="seleccionarEstrella(4)">★</span>
+              <span class="star" onclick="seleccionarEstrella(5)">★</span>
+            </div>
+
+            <label for="op-mensaje">Mensaje o Opinión</label>
+            <textarea id="op-mensaje" placeholder="Escribe aquí tu experiencia..." required></textarea>
+
+            <button type="submit" class="btn-primary" style="width: 100%; margin-top: 0.8rem;">✉️ Enviar Correo a la Biblioteca</button>
+      </form>
+        </div>
+
+        <!-- UBICACIÓN Y MAPA -->
+        <div class="mapa-box">
+          <h3>📍 Sede Central</h3>
+          <p style="font-size: 0.85rem; color: #666; margin-top: 0.3rem;">Visítanos para retiros físicos e informes.</p>
+          <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3272.234589231842!2d-56.1882!3d-34.9056!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x959f802131234567%3A0x123456789abcdef!2sBiblioteca%20Nacional!5e0!3m2!1ses!2suy!4v1620000000000!5m2!1ses!2suy" allowfullscreen="" loading="lazy"></iframe>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="pie-pagina">
+      <div class="redes-sociales">
+        <a href="https://facebook.com" target="_blank" class="red-link">Facebook</a>
+        <a href="https://instagram.com" target="_blank" class="red-link">Instagram</a>
+        <a href="https://x.com" target="_blank" class="red-link">X (Twitter)</a>
+      </div>
+      <p>© 2026 Biblioteca Central — Todos los derechos reservados.</p>
+    </footer>
+
+  </div>
+
+  <script>
+    let usuarioSesion = { nombre: '', ci: '', rol: '' };
+    let calificacionEstrellas = 0;
+    let asignacionesCasilleros = {};
+    let estadoAbiertoBiblioteca = false;
+    let estudiantesRegistrados = JSON.parse(localStorage.getItem('estudiantesBiblioteca') || '[]');
+    let prestamosBiblioteca = JSON.parse(localStorage.getItem('prestamosBiblioteca') || '[]');
+    let consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
+    let intervaloChat = null;
+    let conversacionActivaCi = '';
+
+    const librosAdicionales = [
+      ['La casa de los espíritus', 'Isabel Allende', 'Narrativa'],
+      ['Rayuela', 'Julio Cortázar', 'Narrativa'],
+      ['Pedro Páramo', 'Juan Rulfo', 'Narrativa'],
+      ['El amor en los tiempos del cólera', 'Gabriel García Márquez', 'Narrativa'],
+      ['Fahrenheit 451', 'Ray Bradbury', 'Ciencia Ficción'],
+      ['Fundación', 'Isaac Asimov', 'Ciencia Ficción'],
+      ['Solaris', 'Stanisław Lem', 'Ciencia Ficción'],
+      ['Neuromante', 'William Gibson', 'Ciencia Ficción'],
+      ['La comunidad del anillo', 'J.R.R. Tolkien', 'Fantasía'],
+      ['Harry Potter y la piedra filosofal', 'J.K. Rowling', 'Fantasía'],
+      ['La historia interminable', 'Michael Ende', 'Fantasía'],
+      ['El nombre del viento', 'Patrick Rothfuss', 'Fantasía'],
+      ['El resplandor', 'Stephen King', 'Thriller'],
+      ['La chica del tren', 'Paula Hawkins', 'Thriller'],
+      ['Los hombres que no amaban a las mujeres', 'Stieg Larsson', 'Misterio'],
+      ['Asesinato en el Orient Express', 'Agatha Christie', 'Policial'],
+      ['Sapiens', 'Yuval Noah Harari', 'Historia'],
+      ['Una breve historia del tiempo', 'Stephen Hawking', 'Ciencia'],
+      ['Cosmos', 'Carl Sagan', 'Ciencia'],
+      ['El gen egoísta', 'Richard Dawkins', 'Ciencia'],
+      ['Breve historia de casi todo', 'Bill Bryson', 'Ciencia'],
+      ['El arte de la guerra', 'Sun Tzu', 'Humanidades'],
+      ['El mundo de Sofía', 'Jostein Gaarder', 'Filosofía'],
+      ['Ética para Amador', 'Fernando Savater', 'Filosofía'],
+      ['El contrato social', 'Jean-Jacques Rousseau', 'Filosofía'],
+      ['Economía para no economistas', 'Xavier Sala-i-Martin', 'Economía'],
+      ['Padre rico, padre pobre', 'Robert Kiyosaki', 'Finanzas'],
+      ['El inversor inteligente', 'Benjamin Graham', 'Finanzas'],
+      ['Marketing 5.0', 'Philip Kotler', 'Negocios'],
+      ['El método Lean Startup', 'Eric Ries', 'Negocios'],
+      ['JavaScript: The Good Parts', 'Douglas Crockford', 'Tecnología'],
+      ['Eloquent JavaScript', 'Marijn Haverbeke', 'Tecnología'],
+      ['Python Crash Course', 'Eric Matthes', 'Tecnología'],
+      ['The Pragmatic Programmer', 'David Thomas y Andrew Hunt', 'Tecnología'],
+      ['Refactoring', 'Martin Fowler', 'Tecnología'],
+      ['Don Quijote de la Mancha', 'Miguel de Cervantes', 'Clásicos'],
+      ['La Odisea', 'Homero', 'Clásicos'],
+      ['Hamlet', 'William Shakespeare', 'Teatro'],
+      ['La metamorfosis', 'Franz Kafka', 'Clásicos'],
+      ['Mujercitas', 'Louisa May Alcott', 'Juvenil']
+    ];
+
+    const novedadesSemanales = [
+      ['JavaScript: The Good Parts', 'Tecnología'],
+      ['Sapiens', 'Historia'],
+      ['La casa de los espíritus', 'Narrativa'],
+      ['Fahrenheit 451', 'Ciencia Ficción'],
+      ['Python Crash Course', 'Tecnología']
+    ];
+
+    const tiendasUruguay = [
+      ['Bookshop', 'https://www.bookshop.com.uy/catalogsearch/result/?q='],
+      ['Librería Pocho', 'https://www.google.com/search?q=site%3Alibreriapocho.com.uy+'],
+      ['Mosca', 'https://www.mosca.com.uy/catalogsearch/result/?q='],
+      ['Mercado Libre Uruguay', 'https://listado.mercadolibre.com.uy/']
+    ];
+
+    function renderizarLibrosAdicionales(libros = librosAdicionales) {
+      const contenedor = document.getElementById('libros-adicionales');
+      contenedor.innerHTML = libros.map(([titulo, autor, categoria]) => {
+        const categoriaVisible = {
+          Escuela: 'Primaria',
+          Liceo: 'Secundaria',
+          Genero: 'Narrativa'
+        }[categoria] || categoria;
+
+        return `
+        <div class="libro-card">
+          <span class="subtag">${categoriaVisible}</span>
+          <h4>${titulo}</h4>
+          <p class="autor">${autor}</p>
+          <span class="estado">Disponible</span>
+          <button class="btn-solicitar btn-pedir-libro" onclick="pedirLibro('${titulo}', this)">Pedir Libro</button>
+        </div>
+      `;
+      }).join('');
+      cargarPortadas();
+    }
+
+    function cargarPortadas() {
+      document.querySelectorAll('.libro-card').forEach(card => {
+        if (card.querySelector('.portada-libro')) return;
+        const titulo = card.querySelector('h4')?.innerText.trim();
+        if (!titulo) return;
+
+        const portada = document.createElement('img');
+        portada.className = 'portada-libro';
+        portada.loading = 'lazy';
+        portada.alt = `Portada de ${titulo}`;
+        portada.title = `Portada de ${titulo}`;
+        const portadaAlternativa = `https://placehold.co/300x450/704214/fdf6e3?text=${encodeURIComponent(titulo)}`;
+        const usarPortadaAlternativa = () => {
+          if (portada.dataset.alternativa) return;
+          portada.dataset.alternativa = 'true';
+          portada.src = portadaAlternativa;
+        };
+        portada.src = `https://covers.openlibrary.org/b/title/${encodeURIComponent(titulo)}-M.jpg`;
+        portada.onerror = usarPortadaAlternativa;
+        portada.onload = () => {
+          if (portada.naturalWidth < 10) usarPortadaAlternativa();
+        };
+        card.prepend(portada);
+      });
+    }
+
+    function renderizarNovedades() {
+      const contenedor = document.getElementById('novedades-lista');
+      const ahora = new Date();
+      const semana = Math.floor((ahora - new Date(ahora.getFullYear(), 0, 1)) / (7 * 24 * 60 * 60 * 1000));
+      const inicio = (semana * 5) % librosAdicionales.length;
+      const novedades = Array.from({ length: 5 }, (_, indice) => librosAdicionales[(inicio + indice) % librosAdicionales.length]);
+      contenedor.innerHTML = novedades.map(([titulo, autor, categoria]) => `
+        <div class="novedad-item"><strong>${titulo}</strong><span>${categoria} · Disponible</span></div>
+      `).join('');
+    }
+
+    function inicializarComparadorPrecios() {
+      const selector = document.getElementById('libro-comparar');
+      const libros = [...document.querySelectorAll('.libro-card h4')].map(titulo => titulo.innerText.trim());
+      selector.innerHTML = '<option value="">Selecciona un libro</option>' + [...new Set(libros)].map(titulo => `
+        <option value="${escaparTexto(titulo)}">${escaparTexto(titulo)}</option>
+      `).join('');
+    }
+
+    function renderizarComparacionPrecios() {
+      const titulo = document.getElementById('libro-comparar').value;
+      const cuerpo = document.getElementById('tabla-precios-body');
+      if (!titulo) {
+        cuerpo.innerHTML = '<tr><td colspan="3">Selecciona un libro para ver sus precios.</td></tr>';
+        return;
+      }
+
+      const precioBase = 450 + titulo.length * 12;
+      cuerpo.innerHTML = tiendasUruguay.map(([tienda, enlace]) => {
+        const precio = precioBase + (tienda.length * 17) % 350;
+        const url = `${enlace}${encodeURIComponent(titulo)}`;
+        return `<tr><td>${tienda}</td><td>$U ${precio}</td><td><a href="${url}" target="_blank" rel="noopener noreferrer">Ver en tienda</a></td></tr>`;
+      }).join('');
+    }
+
+    renderizarLibrosAdicionales();
+    renderizarNovedades();
+    cargarPortadas();
+    inicializarComparadorPrecios();
+
+    function cargarPlaylistYouTube() {
+      const valor = document.getElementById('youtube-playlist-url').value.trim();
+      const player = document.getElementById('music-player');
+      let playlistId = valor;
+
+      try {
+        const url = new URL(valor);
+        playlistId = url.searchParams.get('list');
+      } catch (error) {
+        // También se acepta pegar directamente el ID de la playlist.
+      }
+
+      if (!playlistId) {
+        alert('Pega una URL pública de playlist o su ID.');
+        return;
+      }
+
+      player.src = `https://www.youtube.com/embed/videoseries?list=${encodeURIComponent(playlistId)}`;
+    }
+
+    /* RELOJ DIGITAL */
+    function actualizarRelojDigital() {
+      const ahora = new Date();
+      const h = String(ahora.getHours()).padStart(2, '0');
+      const m = String(ahora.getMinutes()).padStart(2, '0');
+      const s = String(ahora.getSeconds()).padStart(2, '0');
+      
+      const elReloj = document.getElementById('reloj-digital');
+      if (elReloj) {
+        elReloj.innerText = `${h}:${m}:${s}`;
+      }
+      
+      verificarHorarioAtencion();
+    }
+    setInterval(actualizarRelojDigital, 1000);
+
+    /* VERIFICACIÓN DE HORARIO DE ATENCIÓN */
+    function verificarHorarioAtencion() {
+      const ahora = new Date();
+      const dia = ahora.getDay(); 
+      const horas = ahora.getHours();
+      const minutos = ahora.getMinutes();
+      const tiempoEnMinutos = horas * 60 + minutos;
+
+      const apertura = 8 * 60; 
+      const cierre = 16 * 60;   
+
+      const banner = document.getElementById('banner-horario');
+      const bannerTexto = document.getElementById('banner-texto');
+
+      if (dia >= 1 && dia <= 4) {
+        if (tiempoEnMinutos >= apertura && tiempoEnMinutos <= cierre) {
+          estadoAbiertoBiblioteca = true;
+          banner.className = 'banner-horario abierto';
+          bannerTexto.innerText = '🟢 Abierto — Horario de atención: 08:00 a 16:00 hs';
+        } else {
+          estadoAbiertoBiblioteca = false;
+          banner.className = 'banner-horario cerrado';
+          bannerTexto.innerText = '🔴 Estamos cerrados, abrimos de nuevo mañana a las 08:00';
+        }
+      } 
+      else if (dia === 5) {
+        if (tiempoEnMinutos >= apertura && tiempoEnMinutos <= cierre) {
+          estadoAbiertoBiblioteca = true;
+          banner.className = 'banner-horario abierto';
+          bannerTexto.innerText = '🟢 Abierto — Horario de atención: 08:00 a 16:00 hs';
+        } else if (tiempoEnMinutos > cierre) {
+          estadoAbiertoBiblioteca = false;
+          banner.className = 'banner-horario cerrado';
+          bannerTexto.innerText = '🔴 Abrimos nuevamente el lunes a las 08:00';
+        } else {
+          estadoAbiertoBiblioteca = false;
+          banner.className = 'banner-horario cerrado';
+          bannerTexto.innerText = '🔴 Estamos cerrados, abrimos de nuevo hoy a las 08:00';
+        }
+      } 
+      else {
+        estadoAbiertoBiblioteca = false;
+        banner.className = 'banner-horario cerrado';
+        bannerTexto.innerText = '🔴 Abrimos nuevamente el lunes a las 08:00';
+      }
+
+      if (usuarioSesion.rol) {
+        aplicarPermisosRol();
+      }
+    }
+
+    /* CAMBIO DE TEMA CLARO / OSCURO */
+    function toggleTema() {
+      document.body.classList.toggle('dark-mode');
+      const esOscuro = document.body.classList.contains('dark-mode');
+      document.getElementById('theme-icon').innerText = esOscuro ? '☀️' : '🌙';
+      document.getElementById('theme-text').innerText = esOscuro ? 'Claro' : 'Oscuro';
+    }
+
+    function iniciarSesion() {
+      const rol = document.getElementById('login-rol').value;
+      const nombre = document.getElementById('login-nombre').value.trim();
+      const ci = document.getElementById('login-usuario').value.trim();
+      const celular = document.getElementById('login-celular').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+      const msg = document.getElementById('login-msg');
+
+      if (!nombre || !ci || !celular || !pass) {
+        msg.style.color = '#8b0000';
+        msg.innerText = 'Completa todos los campos.';
+        return;
+      }
+
+      usuarioSesion = { nombre, ci, celular: normalizarCelular(celular) || celular, rol };
+      abrirPortal();
+    }
+
+    function registrarUsuario() {
+      const nombre = document.getElementById('login-nombre').value.trim();
+      const ci = document.getElementById('login-usuario').value.trim();
+      const email = document.getElementById('login-email').value.trim();
+      const celular = document.getElementById('login-celular').value.trim();
+      const pass = document.getElementById('login-pass').value.trim();
+      const msg = document.getElementById('login-msg');
+
+      if (!nombre || !ci || !email || !celular || !pass) {
+        msg.style.color = '#8b0000';
+        msg.innerText = 'Para registrarte completa nombre, CI, correo y contraseña.';
+        return;
+      }
+
+      const celularWhatsApp = normalizarCelular(celular);
+      if (!celularWhatsApp) {
+        msg.style.color = '#8b0000';
+        msg.innerText = 'Ingresa un celular uruguayo válido, por ejemplo 099 312 136.';
+        return;
+      }
+
+      const registro = { nombre, ci, email, celular: celularWhatsApp, fecha: new Date().toISOString() };
+      localStorage.setItem(`usuarioBiblioteca_${ci}`, JSON.stringify(registro));
+      if (!estudiantesRegistrados.some(estudiante => estudiante.ci === ci)) {
+        estudiantesRegistrados.push(registro);
+        localStorage.setItem('estudiantesBiblioteca', JSON.stringify(estudiantesRegistrados));
+      }
+      msg.style.color = '#2b7a2b';
+      msg.innerText = 'Registro local completado. Ahora puedes ingresar.';
+    }
+
+    function abrirPortal() {
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('main-portal').style.display = 'block';
+      document.getElementById('user-display').innerText = `👤 ${usuarioSesion.nombre} (${usuarioSesion.rol.toUpperCase()})`;
+
+      document.getElementById('op-nombre').value = usuarioSesion.nombre;
+      document.getElementById('totem-ci-input').value = usuarioSesion.ci;
+
+      actualizarRelojDigital();
+      aplicarPermisosRol();
+      sincronizarConsultasChat();
+      if (!intervaloChat) intervaloChat = setInterval(sincronizarConsultasChat, 3000);
+      iniciarCarruselAutomatico();
+    }
+
+    function aplicarPermisosRol() {
+      const esFuncionario = usuarioSesion.rol === 'funcionario';
+      const btnsPedir = document.querySelectorAll('.btn-pedir-libro');
+      const totemInput = document.getElementById('totem-ci-input');
+      const totemBtn = document.getElementById('btn-totem-abrir');
+      const teclasTotem = document.querySelectorAll('.tecla-totem');
+      const lockers = document.querySelectorAll('.locker');
+
+      if (!estadoAbiertoBiblioteca && !esFuncionario) {
+        btnsPedir.forEach(btn => {
+          btn.disabled = true;
+          btn.innerText = 'Biblioteca Cerrada';
+        });
+
+        totemInput.disabled = true;
+        totemBtn.disabled = true;
+        totemBtn.innerText = 'No Disponible';
+        teclasTotem.forEach(tecla => {
+          tecla.disabled = true;
+        });
+
+        lockers.forEach(locker => {
+          locker.classList.add('deshabilitado');
+        });
+
+        const lockerInfo = document.getElementById('locker-role-info');
+        lockerInfo.innerText = '🔴 SERVICIO NO DISPONIBLE: La biblioteca está cerrada en este momento.';
+      } 
+      else {
+        btnsPedir.forEach(btn => {
+          if (btn.innerText === 'Biblioteca Cerrada' || btn.innerText === 'Solo Funcionario') {
+            btn.disabled = !esFuncionario;
+            btn.innerText = 'Pedir Libro';
+          }
+        });
+
+        totemInput.disabled = false;
+        totemBtn.disabled = false;
+        totemBtn.innerText = 'Abrir Casillero';
+        teclasTotem.forEach(tecla => {
+          tecla.disabled = false;
+        });
+
+        lockers.forEach(locker => {
+          locker.classList.remove('deshabilitado');
+        });
+
+        const lockerInfo = document.getElementById('locker-role-info');
+        lockerInfo.innerText = esFuncionario 
+          ? 'Haz clic en un locker para cambiar su estado (Verde = Libre, Rojo = Ocupado).' 
+          : 'Usa tu Cédula en el Tótem para abrir tu casillero asignado.';
+      }
+
+      const btnLiberar = document.getElementById('btn-liberar');
+      btnLiberar.style.display = esFuncionario ? 'block' : 'none';
+
+      const gestionEstudiantes = document.getElementById('gestion-estudiantes');
+      gestionEstudiantes.style.display = esFuncionario ? 'block' : 'none';
+      if (esFuncionario) renderizarEstudiantes();
+
+      const notificacionesFuncionario = document.getElementById('notificaciones-funcionario');
+      notificacionesFuncionario.style.display = esFuncionario ? 'block' : 'none';
+      renderizarNotificacionesFuncionario();
+      renderizarConsultasEnChat();
+
+      const calendario = document.getElementById('calendario');
+      calendario.style.display = esFuncionario ? 'none' : 'block';
+      renderizarCalendarioPrestamos();
+
+      const chatSub = document.getElementById('chat-subtitle');
+      chatSub.innerText = esFuncionario 
+        ? 'Modo Funcionario: Responde a los estudiantes.' 
+        : 'Modo Estudiante: Envía tus consultas.';
+    }
+
+    function cerrarSesion() {
+      detenerCarrusel();
+      clearInterval(intervaloChat);
+      intervaloChat = null;
+      document.getElementById('main-portal').style.display = 'none';
+      document.getElementById('auth-screen').style.display = 'flex';
+    }
+
+    function limpiarDatosGuardados() {
+      document.getElementById('login-nombre').value = '';
+      document.getElementById('login-usuario').value = '';
+      document.getElementById('login-pass').value = '';
+      document.getElementById('login-msg').innerText = 'Datos borrados.';
+    }
+
+    function filtrarLibros() {
+      const filtro = document.getElementById('input-busqueda').value.toLowerCase();
+      const genero = document.getElementById('filtro-genero').value.toLowerCase();
+      document.querySelectorAll('.libro-card').forEach(card => {
+        const coincideTexto = card.innerText.toLowerCase().includes(filtro);
+        const etiqueta = card.querySelector('.subtag')?.innerText.toLowerCase() || '';
+        const coincideGenero = genero === 'todos' || etiqueta === genero;
+        card.style.display = coincideTexto && coincideGenero ? 'flex' : 'none';
+      });
+
+      document.querySelectorAll('.categoria-titulo').forEach(titulo => {
+        const grilla = titulo.nextElementSibling;
+        if (!grilla || !grilla.classList.contains('grid-libros')) return;
+        const hayResultados = [...grilla.querySelectorAll('.libro-card')].some(card => card.style.display !== 'none');
+        titulo.style.display = hayResultados ? 'block' : 'none';
+      });
+    }
+
+    function escaparTexto(texto) {
+      return texto.replace(/[&<>'"]/g, caracter => ({
+        '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+      }[caracter]));
+    }
+
+    function normalizarCelular(celular) {
+      let numero = celular.replace(/\D/g, '');
+      if (numero.startsWith('0')) numero = numero.slice(1);
+      if (numero.startsWith('598')) return numero.length >= 11 ? numero : '';
+      if (numero.length === 8 && numero.startsWith('9')) return `598${numero}`;
+      return '';
+    }
+
+    function renderizarEstudiantes() {
+      const lista = document.getElementById('lista-estudiantes');
+      if (!estudiantesRegistrados.length) {
+        lista.innerHTML = '<p style="font-size: 0.85rem; color: #666;">Todavía no hay estudiantes registrados.</p>';
+        return;
+      }
+
+      lista.innerHTML = estudiantesRegistrados.map((estudiante, indice) => `
+        <div class="estudiante-registrado">
+          <span><strong>${escaparTexto(estudiante.nombre)}</strong> · CI: ${escaparTexto(estudiante.ci)} · ${escaparTexto(estudiante.email)} · ${escaparTexto(estudiante.celular || 'Sin celular')}</span>
+          <span class="estudiante-acciones">
+            ${estudiante.celular ? `<a class="btn-whatsapp" href="https://wa.me/${estudiante.celular}" target="_blank" rel="noopener noreferrer">WhatsApp</a>` : ''}
+            <button type="button" class="btn-eliminar-estudiante" onclick="eliminarEstudiante(${indice})">Eliminar</button>
+          </span>
+        </div>
+      `).join('');
+    }
+
+    function guardarPrestamos() {
+      localStorage.setItem('prestamosBiblioteca', JSON.stringify(prestamosBiblioteca));
+    }
+
+    function formatearFecha(fecha) {
+      return new Date(`${fecha}T12:00:00`).toLocaleDateString('es-UY');
+    }
+
+    function diasHastaDevolucion(fechaDevolucion) {
+      const hoy = new Date();
+      const fechaHoy = new Date(hoy.getFullYear(), hoy.getMonth(), hoy.getDate());
+      const fecha = new Date(`${fechaDevolucion}T00:00:00`);
+      return Math.round((fecha - fechaHoy) / (24 * 60 * 60 * 1000));
+    }
+
+    function verificarRecordatoriosDevolucion() {
+      const alertas = document.getElementById('alertas-devolucion');
+      if (!alertas || usuarioSesion.rol !== 'estudiante') return;
+
+      const prestamosDelEstudiante = prestamosBiblioteca.filter(prestamo => prestamo.ci === usuarioSesion.ci);
+      const recordatorios = prestamosDelEstudiante.map(prestamo => {
+        const dias = diasHastaDevolucion(prestamo.fechaDevolucion);
+        if (dias < 0) {
+          return `<strong>Devolución vencida:</strong> debes devolver “${escaparTexto(prestamo.libro)}” al locker. La fecha era ${formatearFecha(prestamo.fechaDevolucion)}.`;
+        }
+        if (dias === 0) {
+          return `<strong>Recordatorio para hoy:</strong> devuelve “${escaparTexto(prestamo.libro)}” al locker antes de finalizar el día.`;
+        }
+        if (dias <= 2) {
+          return `<strong>Recordatorio:</strong> faltan ${dias} día${dias === 1 ? '' : 's'} para devolver “${escaparTexto(prestamo.libro)}” al locker. Fecha: ${formatearFecha(prestamo.fechaDevolucion)}.`;
+        }
+        return '';
+      }).filter(Boolean);
+
+      alertas.innerHTML = recordatorios.join('<br><br>');
+      alertas.style.display = recordatorios.length ? 'block' : 'none';
+
+      if (recordatorios.length && 'Notification' in window) {
+        const claveAviso = `recordatorioDevolucion_${usuarioSesion.ci}_${new Date().toISOString().slice(0, 10)}`;
+        if (!localStorage.getItem(claveAviso)) {
+          const mostrarNotificaciones = () => {
+            if (Notification.permission === 'granted') {
+              new Notification('Recordatorio de devolución', {
+                body: recordatorios[0].replace(/<[^>]*>/g, ''),
+                icon: 'https://cdn-icons-png.flaticon.com/512/2232/2232688.png'
+              });
+              localStorage.setItem(claveAviso, 'enviado');
+            }
+          };
+
+          if (Notification.permission === 'default') {
+            Notification.requestPermission().then(mostrarNotificaciones);
+          } else {
+            mostrarNotificaciones();
+          }
+        }
+      }
+    }
+
+    function renderizarCalendarioPrestamos() {
+      const listaEstudiante = document.getElementById('lista-prestamos-estudiante');
+      const listaFuncionario = document.getElementById('historial-prestamos-funcionario');
+      const prestamosDelEstudiante = prestamosBiblioteca.filter(prestamo => prestamo.ci === usuarioSesion.ci);
+
+      listaEstudiante.innerHTML = prestamosDelEstudiante.length
+        ? prestamosDelEstudiante.map(prestamo => `
+          <div class="prestamo-item">
+            <div><strong>${escaparTexto(prestamo.libro)}</strong><span class="prestamo-retirado">Retirado: ${formatearFecha(prestamo.fechaRetiro)}</span></div>
+            <span class="prestamo-fecha">Devolver el<br>${formatearFecha(prestamo.fechaDevolucion)}</span>
+          </div>
+        `).join('')
+        : '<p style="font-size: 0.85rem; color: #666;">No tienes préstamos registrados.</p>';
+
+      listaFuncionario.innerHTML = prestamosBiblioteca.length
+        ? prestamosBiblioteca.map(prestamo => `
+          <div class="prestamo-item">
+            <div><strong>${escaparTexto(prestamo.nombreEstudiante)} retiró “${escaparTexto(prestamo.libro)}”</strong><span class="prestamo-retirado">CI: ${escaparTexto(prestamo.ci)} · Locker ${escaparTexto(prestamo.numLocker)}</span></div>
+            <span class="prestamo-fecha">Devolución:<br>${formatearFecha(prestamo.fechaDevolucion)}<br><a class="btn-recordatorio" href="${crearEnlaceRecordatorio(prestamo)}" target="_blank" rel="noopener noreferrer">WhatsApp</a></span>
+          </div>
+        `).join('')
+        : '<p style="font-size: 0.85rem; color: #666;">Todavía no hay retiros registrados.</p>';
+
+      verificarRecordatoriosDevolucion();
+    }
+
+    function crearEnlaceRecordatorio(prestamo) {
+      const estudiante = estudiantesRegistrados.find(registro => registro.ci === prestamo.ci);
+      const celular = normalizarCelular(estudiante?.celular || '');
+      const mensaje = `Hola ${prestamo.nombreEstudiante}, te recordamos que debes devolver el libro “${prestamo.libro}” al locker ${prestamo.numLocker} el ${formatearFecha(prestamo.fechaDevolucion)}. Biblioteca Central.`;
+      return celular ? `https://wa.me/${celular}?text=${encodeURIComponent(mensaje)}` : '#';
+    }
+
+    function registrarEstudiante() {
+      if (usuarioSesion.rol !== 'funcionario') return;
+
+      const nombre = document.getElementById('nuevo-estudiante-nombre').value.trim();
+      const ci = document.getElementById('nuevo-estudiante-ci').value.trim();
+      const email = document.getElementById('nuevo-estudiante-email').value.trim();
+      const celular = document.getElementById('nuevo-estudiante-celular').value.trim();
+      const password = document.getElementById('nuevo-estudiante-password').value.trim();
+
+      if (!/^\d{7,8}$/.test(ci)) {
+        alert('La cédula debe contener entre 7 y 8 dígitos.');
+        return;
+      }
+
+      const celularWhatsApp = normalizarCelular(celular);
+      if (!celularWhatsApp) {
+        alert('Ingresa un número de celular válido.');
+        return;
+      }
+
+      if (estudiantesRegistrados.some(estudiante => estudiante.ci === ci)) {
+        alert('Esa cédula ya está registrada.');
+        return;
+      }
+
+      estudiantesRegistrados.push({ nombre, ci, email, celular: celularWhatsApp, fecha: new Date().toISOString() });
+      localStorage.setItem('estudiantesBiblioteca', JSON.stringify(estudiantesRegistrados));
+      document.querySelector('.registro-estudiante').reset();
+      renderizarEstudiantes();
+      alert('Estudiante registrado localmente correctamente.');
+    }
+
+    function eliminarEstudiante(indice) {
+      if (usuarioSesion.rol !== 'funcionario') return;
+      estudiantesRegistrados.splice(indice, 1);
+      localStorage.setItem('estudiantesBiblioteca', JSON.stringify(estudiantesRegistrados));
+      renderizarEstudiantes();
+    }
+
+    function enviarDudaPorWhatsApp() {
+      const texto = document.getElementById('chat-input').value.trim();
+      const celular = normalizarCelular(usuarioSesion.celular || '');
+      if (!texto) {
+        alert('Escribe tu duda antes de enviarla por WhatsApp.');
+        return;
+      }
+      if (!celular) {
+        alert('No hay un celular válido registrado para este usuario.');
+        return;
+      }
+
+      const mensaje = `Hola ${usuarioSesion.nombre}, esta es tu consulta para la Biblioteca Central: ${texto}`;
+      window.open(`https://wa.me/${celular}?text=${encodeURIComponent(mensaje)}`, '_blank', 'noopener,noreferrer');
+    }
+
+    function abrirLibroNav(libro, evento) {
+      evento.preventDefault();
+      document.querySelectorAll('.nav-book.abierto').forEach(libroAbierto => {
+        libroAbierto.classList.remove('abierto');
+      });
+      libro.classList.add('abierto');
+
+      const destino = document.querySelector(libro.getAttribute('href'));
+      if (destino) {
+        setTimeout(() => destino.scrollIntoView({ behavior: 'smooth', block: 'start' }), 180);
+      }
+    }
+
+    function pedirLibro(titulo, btn) {
+      if (usuarioSesion.rol !== 'funcionario' && !estadoAbiertoBiblioteca) {
+        alert("La biblioteca está cerrada.");
+        return;
+      }
+
+      if (usuarioSesion.rol !== 'funcionario') return;
+
+      const ciEstudiante = prompt("Ingresa la Cédula de Identidad del estudiante que retira:");
+      if (!ciEstudiante) return;
+      const fechaPredeterminada = new Date();
+      fechaPredeterminada.setDate(fechaPredeterminada.getDate() + 7);
+      const fechaDevolucion = prompt('Ingresa la fecha de devolución (AAAA-MM-DD):', fechaPredeterminada.toISOString().slice(0, 10));
+      if (!fechaDevolucion || !/^\d{4}-\d{2}-\d{2}$/.test(fechaDevolucion)) {
+        alert('Debes ingresar una fecha válida con formato AAAA-MM-DD.');
+        return;
+      }
+
+      const lockersLibres = document.querySelectorAll('.locker.disponible:not(.deshabilitado)');
+      if (lockersLibres.length > 0) {
+        const locker = lockersLibres[0];
+        const num = locker.id.replace('locker-', '');
+        
+        locker.classList.remove('disponible');
+        locker.classList.add('ocupado');
+        locker.innerHTML = `${num}<br><small>Ocupado</small>`;
+
+        asignacionesCasilleros[ciEstudiante.trim()] = {
+          lockerId: locker.id,
+          numLocker: num,
+          libro: titulo,
+          fechaDevolucion
+        };
+
+        btn.disabled = true;
+        btn.innerText = "Asignado";
+
+        const notif = document.getElementById('notif-retiro');
+        notif.innerHTML = `✅ Libro <strong>"${titulo}"</strong> asignado al Locker <strong>${num}</strong> para el CI: <strong>${ciEstudiante}</strong>.`;
+        notif.style.display = 'block';
+      } else {
+        alert("No hay lockers disponibles (Verdes).");
+      }
+    }
+
+    /* TÓTEM AUTENTICACIÓN Y APERTURA CON CÉDULA */
+    function agregarDigitoTotem(digito) {
+      const input = document.getElementById('totem-ci-input');
+      if (input.disabled || input.value.length >= input.maxLength) return;
+      input.value += digito;
+    }
+
+    function borrarUltimoDigitoTotem() {
+      const input = document.getElementById('totem-ci-input');
+      if (!input.disabled) input.value = input.value.slice(0, -1);
+    }
+
+    function borrarTotem() {
+      const input = document.getElementById('totem-ci-input');
+      if (!input.disabled) input.value = '';
+    }
+
+    function autenticarTotemPorCI() {
+      if (!estadoAbiertoBiblioteca && usuarioSesion.rol !== 'funcionario') {
+        alert("El servicio de Tótem está fuera de horario.");
+        return;
+      }
+
+      const ci = document.getElementById('totem-ci-input').value.trim();
+      const notif = document.getElementById('notif-retiro');
+
+      if (!ci) {
+        alert("Por favor ingresa una Cédula válida.");
+        return;
+      }
+
+      if (asignacionesCasilleros[ci]) {
+        const reserva = asignacionesCasilleros[ci];
+        const elLocker = document.getElementById(reserva.lockerId);
+        const estudiante = estudiantesRegistrados.find(registro => registro.ci === ci);
+        const prestamo = {
+          ci,
+          nombreEstudiante: estudiante?.nombre || `Estudiante CI ${ci}`,
+          libro: reserva.libro,
+          numLocker: reserva.numLocker,
+          fechaRetiro: new Date().toISOString().slice(0, 10),
+          fechaDevolucion: reserva.fechaDevolucion
+        };
+
+        prestamosBiblioteca = prestamosBiblioteca.filter(item => !(item.ci === ci && item.libro === reserva.libro));
+        prestamosBiblioteca.push(prestamo);
+        guardarPrestamos();
+        renderizarCalendarioPrestamos();
+
+        elLocker.classList.remove('ocupado');
+        elLocker.classList.add('abierto');
+        elLocker.innerHTML = `${reserva.numLocker}<br><small>¡ABIERTO!</small>`;
+
+        notif.innerHTML = `🔓 <strong>¡Casillero ${reserva.numLocker} Abierto!</strong><br>Puedes retirar el libro: <strong>"${reserva.libro}"</strong>.<br>Devolución: <strong>${formatearFecha(reserva.fechaDevolucion)}</strong>`;
+        notif.style.display = 'block';
+
+        setTimeout(() => {
+          elLocker.classList.remove('abierto');
+          elLocker.classList.add('disponible');
+          elLocker.innerHTML = `${reserva.numLocker}<br><small>Libre</small>`;
+          delete asignacionesCasilleros[ci];
+        }, 5000);
+
+      } else {
+        alert("No se encontró ningún libro asignado a la Cédula: " + ci);
+      }
+    }
+
+    function gestionarLocker(num, elemento) {
+      if (!estadoAbiertoBiblioteca && usuarioSesion.rol !== 'funcionario') {
+        alert("Servicio no disponible mientras la biblioteca esté cerrada.");
+        return;
+      }
+
+      if (usuarioSesion.rol !== 'funcionario') {
+        alert("Acceso denegado: Usa el formulario con tu Cédula para abrir tu locker.");
+        return;
+      }
+
+      if (elemento.classList.contains('disponible')) {
+        elemento.classList.remove('disponible');
+        elemento.classList.add('ocupado');
+        elemento.innerHTML = `${num}<br><small>Ocupado</small>`;
+      } else {
+        elemento.classList.remove('ocupado', 'abierto');
+        elemento.classList.add('disponible');
+        elemento.innerHTML = `${num}<br><small>Libre</small>`;
+      }
+    }
+
+    function liberarTodosLockers() {
+      if (usuarioSesion.rol !== 'funcionario') return;
+
+      document.querySelectorAll('.locker').forEach(locker => {
+        const num = locker.id.replace('locker-', '');
+        locker.className = 'locker disponible';
+        locker.innerHTML = `${num}<br><small>Libre</small>`;
+      });
+
+      asignacionesCasilleros = {};
+
+      const notif = document.getElementById('notif-retiro');
+      notif.innerText = "🔓 Todos los casilleros han sido liberados (Puestos en Verde).";
+      notif.style.display = "block";
+    }
+
+    /* CHATBOT */
+    function sincronizarConsultasChat() {
+      consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
+      renderizarNotificacionesFuncionario();
+      renderizarConsultasEnChat();
+    }
+
+    function guardarMensajeChat(texto, rol, destinatarioCi = '') {
+      consultasChat = JSON.parse(localStorage.getItem('consultasChatBiblioteca') || '[]');
+      consultasChat.push({
+        id: `${Date.now()}-${usuarioSesion.ci}`,
+        nombre: usuarioSesion.nombre,
+        ci: usuarioSesion.ci,
+        texto,
+        fecha: new Date().toISOString(),
+        leida: false,
+        rol,
+        destinatarioCi
+      });
+      localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
+      sincronizarConsultasChat();
+    }
+
+    function renderizarNotificacionesFuncionario() {
+      const contador = document.getElementById('contador-notificaciones');
+      const lista = document.getElementById('lista-notificaciones');
+      if (!contador || !lista) return;
+
+      const pendientes = consultasChat.filter(consulta => consulta.rol === 'estudiante' && !consulta.leida);
+      contador.textContent = pendientes.length;
+      contador.hidden = pendientes.length === 0;
+      lista.innerHTML = pendientes.length
+        ? pendientes.map(consulta => `
+          <div class="notificacion-chat" onclick="seleccionarConversacion('${escaparTexto(consulta.ci)}')">
+            <strong>${escaparTexto(consulta.nombre)}</strong> consultó:<br>
+            “${escaparTexto(consulta.texto)}”<br>
+            <small>${new Date(consulta.fecha).toLocaleString('es-UY')}</small>
+          </div>
+        `).join('')
+        : '<div class="notificacion-chat">No hay consultas pendientes.</div>';
+    }
+
+    function renderizarConsultasEnChat() {
+      const chatBox = document.getElementById('chat-messages');
+      if (!chatBox) return;
+
+      const mensajesVisibles = usuarioSesion.rol === 'funcionario'
+        ? consultasChat
+        : consultasChat.filter(consulta => (
+          consulta.ci === usuarioSesion.ci || consulta.destinatarioCi === usuarioSesion.ci
+        ));
+
+      chatBox.innerHTML = '<div class="msg funcionario"><strong>Funcionario:</strong> Hola. ¿En qué podemos ayudarte hoy?</div>';
+      mensajesVisibles.forEach((consulta, indice) => {
+        const idConsulta = consulta.id || `${consulta.fecha}-${consulta.ci}-${indice}`;
+
+        const mensaje = document.createElement('div');
+        mensaje.className = `msg ${consulta.rol === 'estudiante' ? 'estudiante' : 'funcionario'} mensaje-consulta-recibida`;
+        mensaje.dataset.consultaId = idConsulta;
+        const etiquetaRol = consulta.rol === 'estudiante' ? 'Estudiante' : 'Funcionario';
+        mensaje.innerHTML = `<strong>${escaparTexto(consulta.nombre)} (${etiquetaRol}):</strong> ${escaparTexto(consulta.texto)}`;
+        chatBox.appendChild(mensaje);
+      });
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    function seleccionarConversacion(ci) {
+      conversacionActivaCi = ci;
+      consultasChat = consultasChat.map(consulta => (
+        consulta.ci === ci && consulta.rol === 'estudiante'
+          ? { ...consulta, leida: true }
+          : consulta
+      ));
+      localStorage.setItem('consultasChatBiblioteca', JSON.stringify(consultasChat));
+      renderizarNotificacionesFuncionario();
+      renderizarConsultasEnChat();
+      document.getElementById('contacto').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    }
+
+    function toggleNotificacionesFuncionario(evento) {
+      evento.stopPropagation();
+      const lista = document.getElementById('lista-notificaciones');
+      const seAbre = lista.style.display !== 'block';
+      lista.style.display = seAbre ? 'block' : 'none';
+    }
+
+    window.addEventListener('storage', evento => {
+      if (evento.key === 'consultasChatBiblioteca') sincronizarConsultasChat();
+    });
+
+    function enviarMensajeChat() {
+      const input = document.getElementById('chat-input');
+      const texto = input.value.trim();
+      if (!texto) return;
+
+      const chatBox = document.getElementById('chat-messages');
+      const msgDiv = document.createElement('div');
+
+      if (usuarioSesion.rol === 'estudiante') {
+        msgDiv.className = 'msg estudiante';
+        msgDiv.innerHTML = `<strong>${escaparTexto(usuarioSesion.nombre)} (Estudiante):</strong> ${escaparTexto(texto)}`;
+        chatBox.appendChild(msgDiv);
+        input.value = '';
+
+        guardarMensajeChat(texto, 'estudiante', usuarioSesion.ci);
+
+        setTimeout(() => {
+          const autoReply = document.createElement('div');
+          autoReply.className = 'msg funcionario';
+          const consulta = texto.toLowerCase();
+          let respuesta = 'Consulta recibida. Un funcionario responderá a la brevedad.';
+          if (consulta.includes('horario') || consulta.includes('abre')) {
+            respuesta = 'La biblioteca atiende de lunes a viernes, de 08:00 a 16:00 hs.';
+          } else if (consulta.includes('libro') || consulta.includes('catálogo')) {
+            respuesta = 'Puedes buscar títulos en el catálogo y solicitar el ejemplar disponible.';
+          } else if (consulta.includes('locker') || consulta.includes('casillero')) {
+            respuesta = 'El funcionario asigna un locker. Luego ingresa tu cédula en el tótem para abrirlo.';
+          } else if (consulta.includes('registro') || consulta.includes('registrar')) {
+            respuesta = 'Un funcionario debe registrarte desde el panel de Registro de estudiantes.';
+          }
+          autoReply.innerHTML = `<strong>Asistente:</strong> ${respuesta}`;
+          chatBox.appendChild(autoReply);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        }, 800);
+
+      } else if (usuarioSesion.rol === 'funcionario') {
+        const destinatarioCi = conversacionActivaCi || consultasChat.find(consulta => consulta.rol === 'estudiante' && !consulta.leida)?.ci;
+        if (!destinatarioCi) {
+          alert('Selecciona primero una consulta desde la campana.');
+          return;
+        }
+        msgDiv.className = 'msg funcionario';
+        msgDiv.innerHTML = `<strong>${escaparTexto(usuarioSesion.nombre)} (Funcionario):</strong> ${escaparTexto(texto)}`;
+        chatBox.appendChild(msgDiv);
+        input.value = '';
+        guardarMensajeChat(texto, 'funcionario', destinatarioCi);
+      }
+
+      chatBox.scrollTop = chatBox.scrollHeight;
+    }
+
+    /* OPINÓMETRO Y SELECCIÓN DE ESTRELLAS */
+    function seleccionarEstrella(cant) {
+      calificacionEstrellas = cant;
+      const estrellas = document.querySelectorAll('#estrellas-box .star');
+      estrellas.forEach((star, index) => {
+        if (index < cant) {
+          star.classList.add('active');
+        } else {
+          star.classList.remove('active');
+        }
+      });
+    }
+
+    /* ENVÍO REAL DE CORREO ELECTRÓNICO (mailto:) */
+    function enviarCorreoFeedback() {
+      const nombre = document.getElementById('op-nombre').value.trim();
+      const email = document.getElementById('op-email').value.trim();
+      const mensaje = document.getElementById('op-mensaje').value.trim();
+
+      if (!nombre || !email || !mensaje) {
+        alert("Por favor completa todos los campos.");
+        return;
+      }
+
+      if (calificacionEstrellas === 0) {
+        alert("Por favor selecciona una calificación en estrellas.");
+        return;
+      }
+
+      const casillaDestino = "losiacostalibtechuruguay@gmail.com";
+      const asunto = encodeURIComponent(`Nuevo Comentario de ${nombre} - Biblioteca Central`);
+      const cuerpo = encodeURIComponent(
+        `Hola Biblioteca Central,\n\n` +
+        `Has recibido un nuevo comentario desde el portal:\n\n` +
+        `👤 Nombre: ${nombre}\n` +
+        `✉️ Correo de contacto: ${email}\n` +
+        `⭐ Calificación: ${calificacionEstrellas} estrella(s)\n\n` +
+        `💬 Opinión / Mensaje:\n${mensaje}\n\n` +
+        `---\nEnviado desde el Portal Institucional.`
+      );
+
+      // Abrir el cliente de correo predeterminado del usuario
+      window.location.href = `mailto:${casillaDestino}?subject=${asunto}&body=${cuerpo}`;
+
+      alert("Apertura de cliente de correo iniciada. Presiona 'Enviar' en tu aplicación de correo.");
+      
+      document.getElementById('op-mensaje').value = '';
+      seleccionarEstrella(0);
+    }
+
+    /* CARRUSEL */
+    let slideIndex = 0;
+    let timerCarrusel = null;
+
+    function moverCarrusel(dir) {
+      const slides = document.querySelectorAll('.carousel-slide');
+      if (!slides.length) return;
+      slides[slideIndex].classList.remove('active');
+      slideIndex = (slideIndex + dir + slides.length) % slides.length;
+      slides[slideIndex].classList.add('active');
+    }
+
+    function iniciarCarruselAutomatico() {
+      if (!timerCarrusel) timerCarrusel = setInterval(() => moverCarrusel(1), 3500);
+    }
+
+    function detenerCarrusel() { clearInterval(timerCarrusel); timerCarrusel = null; }
+  </script>
+
+</body>
+</html>
